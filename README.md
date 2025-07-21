@@ -1,157 +1,132 @@
-# 🧼 FreshDesk — Windows Maintenance & Optimization Toolkit
+# FreshDesk
 
-**FreshDesk** est une suite modulaire PowerShell pour diagnostiquer, entretenir, réparer et optimiser les systèmes Windows.  
-Chaque script est auto-documenté, validé automatiquement et exécutable via un moteur CLI ou ligne de commande.
+**FreshDesk** est une application PowerShell modulaire pour la maintenance, le diagnostic et la réparation de systèmes Windows.
 
----
-
-## 🔧 Fonctionnement
-
-- Chaque script possède un en-tête `.SYNOPSIS`, `.DESCRIPTION`, `.AUTHOR`, `.METADATA`, `.REQUIRES`, etc.
-- Le moteur lit dynamiquement les scripts depuis le dossier `/scripts/`, sans codage manuel
-- Un menu CLI interactif permet de naviguer dans toutes les options
-- Chaque exécution est journalisée (logs standards et logs d’erreurs)
-- Des tests unitaires et d’intégration valident la stabilité de l’outil
-- Une documentation HTML (`docs/index.html`) est générée automatiquement
+![PowerShell](https://img.shields.io/badge/PowerShell-7+-blue.svg)
+![Platform](https://img.shields.io/badge/Platform-Windows-lightgrey.svg)
+![CI](https://img.shields.io/github/actions/workflow/status/<your-username>/FreshDesk/tests.yml?branch=main)
+![License](https://img.shields.io/github/license/<your-username>/FreshDesk)
 
 ---
 
-## 📁 Arborescence des scripts
+## 🚀 Fonctionnalités principales
 
-### 📂 Diagnostics
-- **analyze-eventlog.ps1** : (aucun résumé)
-  - (aucune description)
-- **check-bsod-history.ps1** : (aucun résumé)
-  - (aucune description)
-- **check-updates-status.ps1** : (aucun résumé)
-  - (aucune description)
-- **export-system-summary.ps1** : (aucun résumé)
-  - (aucune description)
-- **frequent-crashes.ps1** : (aucun résumé)
-  - (aucune description)
-- **generate-performance-report.ps1** : (aucun résumé)
-  - (aucune description)
-- **list-app-crashes.ps1** : (aucun résumé)
-  - (aucune description)
-- **memory-diagnostics.ps1** : (aucun résumé)
-  - (aucune description)
-- **reboot-history.ps1** : (aucun résumé)
-  - (aucune description)
-- **startup-programs.ps1** : (aucun résumé)
-  - (aucune description)
+- 🎯 Exécution dynamique des scripts via CLI ou ligne de commande
+- 📋 Menu interactif avec sélection de script, affichage `.SYNOPSIS`
+- 🧩 Scripts organisés par catégories : `diagnostics`, `network`, `maintenance`, `performance`, `security`, etc.
+- ✅ Validation automatique des métadonnées de chaque script
+- 🧪 Tests unitaires et d’intégration
+- 📊 Rapport HTML/CSV des exécutions
+- 🗂️ Support des rollbacks (`scripts/undo/`)
+- 📦 Prêt pour CI/CD GitHub (tests, validation)
 
-### 📂 Example
-- **example-ko.ps1** : (aucun résumé)
-  - (aucune description)
-- **example-valid.ps1** : (aucun résumé)
-  - (aucune description)
+---
 
-### 📂 Maintenance
-- **clean-prefetch.ps1** : (aucun résumé)
-  - (aucune description)
-- **clean-shell-extensions.ps1** : (aucun résumé)
-  - (aucune description)
-- **clean-temp-deep.ps1** : (aucun résumé)
-  - (aucune description)
-- **clean-temp.ps1** : (aucun résumé)
-  - (aucune description)
-- **cleanmgr-automated.ps1** : (aucun résumé)
-  - (aucune description)
-- **disable-animations.ps1** : (aucun résumé)
-  - (aucune description)
-- **disable-onedrive.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-explorer.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-windows-store.ps1** : (aucun résumé)
-  - (aucune description)
-- **upgrade-all-apps.ps1** : (aucun résumé)
-  - (aucune description)
+## 🧱 Structure du projet
 
-### 📂 Network
-- **clear-proxy-settings.ps1** : (aucun résumé)
-  - (aucune description)
-- **export-network-info.ps1** : (aucun résumé)
-  - (aucune description)
-- **flush-dns.ps1** : (aucun résumé)
-  - (aucune description)
-- **network-diagnose.ps1** : (aucun résumé)
-  - (aucune description)
-- **network-profile-public.ps1** : (aucun résumé)
-  - (aucune description)
-- **purge-ipv6-cache.ps1** : (aucun résumé)
-  - (aucune description)
-- **renew-ip.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-firewall-rules.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-network-stack.ps1** : (aucun résumé)
-  - (aucune description)
+```
+.
+├── engine/                 # Moteur principal
+├── cli/                   # Menu CLI interactif
+├── modules/               # Logger, autoload
+├── scripts/               # Scripts organisés par thème
+├── tests/                 # Unit & integration tests
+├── validator/             # Scripts de validation
+├── logs/                  # Fichiers log & HTML
+├── settings.json          # Configuration centrale
+├── CHANGELOG.md
+├── LICENSE
+└── README.md
+```
 
-### 📂 Performance
-- **check-ssd-optimizations.ps1** : (aucun résumé)
-  - (aucune description)
-- **clean-directx-cache.ps1** : (aucun résumé)
-  - (aucune description)
-- **clean-xbox-cache.ps1** : (aucun résumé)
-  - (aucune description)
-- **disable-indexing.ps1** : (aucun résumé)
-  - (aucune description)
-- **disable-startup-services.ps1** : (aucun résumé)
-  - (aucune description)
-- **enable-fastboot.ps1** : (aucun résumé)
-  - (aucune description)
-- **enable-ultimate-performance.ps1** : (aucun résumé)
-  - (aucune description)
-- **is-disk-ssd.ps1** : (aucun résumé)
-  - (aucune description)
-- **top-processes.ps1** : (aucun résumé)
-  - (aucune description)
+---
 
-### 📂 Security
-- **check-defender-status.ps1** : (aucun résumé)
-  - (aucune description)
-- **check-uac-status.ps1** : (aucun résumé)
-  - (aucune description)
-- **list-admin-users.ps1** : (aucun résumé)
-  - (aucune description)
-- **list-runonce-keys.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-bitlocker-services.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-security-policies.ps1** : (aucun résumé)
-  - (aucune description)
-- **scan-defender.ps1** : (aucun résumé)
-  - (aucune description)
-- **scan-hidden-tasks.ps1** : (aucun résumé)
-  - (aucune description)
+## 💻 Installation
 
-### 📂 System
-- **clear-icon-cache.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-color-profiles.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-display.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-file-associations.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-print-queue.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-taskbar.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-wmi.ps1** : (aucun résumé)
-  - (aucune description)
-- **rollback-example.ps1** : (aucun résumé)
-  - (aucune description)
-- **shutdown-restart.ps1** : (aucun résumé)
-  - (aucune description)
+1. **Cloner le dépôt :**
 
-### 📂 Test
-- **simulate-script-failure.ps1** : (aucun résumé)
-  - (aucune description)
-- **simulate-script-long.ps1** : (aucun résumé)
-  - (aucune description)
+```bash
+git clone https://github.com/<your-username>/FreshDesk.git
+cd FreshDesk
+```
 
-### 📂 Undo
-- **undo-reset-network.ps1** : (aucun résumé)
-  - (aucune description)
+2. **Lancer le moteur :**
+
+```powershell
+.\engine\engine.ps1
+```
+
+3. **Ou exécuter un script spécifique :**
+
+```powershell
+.\engine\engine.ps1 -RunScript "flush-dns"
+```
+
+---
+
+## 📋 Menu interactif
+
+```powershell
+.\cli\menu.ps1
+```
+
+- `[i]` : voir la description d’un script
+- `[q]` : quitter
+- `[1,2,...]` : lancer un script
+
+---
+
+## ✅ Validation des scripts
+
+```powershell
+.alidatoralidator-strict.ps1
+```
+
+Valide que chaque script contient :
+`.SYNOPSIS`, `.DESCRIPTION`, `.AUTHOR`, `.REQUIRES`, `.DEPENDENCIES`, `.RESTART`
+
+---
+
+## 🧪 Lancer les tests
+
+- Tous les tests :
+
+```powershell
+.	ests\integration	est-run-all-scripts.ps1
+```
+
+- Test rollback :
+
+```powershell
+.	ests\integration	est-undo-validity.ps1
+```
+
+---
+
+## 📈 Logs et rapports
+
+- CSV : `logs/execution-log.csv`
+- HTML : `logs/execution-summary.html`
+
+---
+
+## 🛠️ Contribuer
+
+1. Forker ce dépôt
+2. Créer une branche : `feature/ma-fonction`
+3. Ajouter/modifier les scripts avec les métadonnées complètes
+4. Faire un `Pull Request`
+
+---
+
+## 📝 License
+
+Distribué sous licence MIT.
+
+---
+
+## 📎 À venir
+
+- Interface graphique (WinForms / PS2EXE)
+- Système de mise à jour automatique
+- Documentation HTML interactive
