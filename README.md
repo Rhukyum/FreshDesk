@@ -1,157 +1,187 @@
-# 🧼 FreshDesk — Windows Maintenance & Optimization Toolkit
+# 💡 FreshDesk - PowerShell pour la maintenance Windows
 
-**FreshDesk** est une suite modulaire PowerShell pour diagnostiquer, entretenir, réparer et optimiser les systèmes Windows.  
-Chaque script est auto-documenté, validé automatiquement et exécutable via un moteur CLI ou ligne de commande.
-
----
-
-## 🔧 Fonctionnement
-
-- Chaque script possède un en-tête `.SYNOPSIS`, `.DESCRIPTION`, `.AUTHOR`, `.METADATA`, `.REQUIRES`, etc.
-- Le moteur lit dynamiquement les scripts depuis le dossier `/scripts/`, sans codage manuel
-- Un menu CLI interactif permet de naviguer dans toutes les options
-- Chaque exécution est journalisée (logs standards et logs d’erreurs)
-- Des tests unitaires et d’intégration valident la stabilité de l’outil
-- Une documentation HTML (`docs/index.html`) est générée automatiquement
+**FreshDesk** est une suite modulaire en PowerShell conçue pour diagnostiquer, réparer et optimiser un système Windows en quelques commandes. Pensée pour les administrateurs, techniciens et utilisateurs avancés.
 
 ---
 
-## 📁 Arborescence des scripts
+![PowerShell](https://img.shields.io/badge/PowerShell-7+-blue.svg)
+![Platform](https://img.shields.io/badge/Platform-Windows-lightgrey.svg)
+![CI](https://img.shields.io/github/actions/workflow/status/Rhukyum/FreshDesk/tests.yml?branch=main)
+![License](https://img.shields.io/github/license/Rhukyum/FreshDesk)
 
-### 📂 Diagnostics
-- **analyze-eventlog.ps1** : (aucun résumé)
-  - (aucune description)
-- **check-bsod-history.ps1** : (aucun résumé)
-  - (aucune description)
-- **check-updates-status.ps1** : (aucun résumé)
-  - (aucune description)
-- **export-system-summary.ps1** : (aucun résumé)
-  - (aucune description)
-- **frequent-crashes.ps1** : (aucun résumé)
-  - (aucune description)
-- **generate-performance-report.ps1** : (aucun résumé)
-  - (aucune description)
-- **list-app-crashes.ps1** : (aucun résumé)
-  - (aucune description)
-- **memory-diagnostics.ps1** : (aucun résumé)
-  - (aucune description)
-- **reboot-history.ps1** : (aucun résumé)
-  - (aucune description)
-- **startup-programs.ps1** : (aucun résumé)
-  - (aucune description)
+---
 
-### 📂 Example
-- **example-ko.ps1** : (aucun résumé)
-  - (aucune description)
-- **example-valid.ps1** : (aucun résumé)
-  - (aucune description)
+## 🎯 Objectif du projet
 
-### 📂 Maintenance
-- **clean-prefetch.ps1** : (aucun résumé)
-  - (aucune description)
-- **clean-shell-extensions.ps1** : (aucun résumé)
-  - (aucune description)
-- **clean-temp-deep.ps1** : (aucun résumé)
-  - (aucune description)
-- **clean-temp.ps1** : (aucun résumé)
-  - (aucune description)
-- **cleanmgr-automated.ps1** : (aucun résumé)
-  - (aucune description)
-- **disable-animations.ps1** : (aucun résumé)
-  - (aucune description)
-- **disable-onedrive.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-explorer.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-windows-store.ps1** : (aucun résumé)
-  - (aucune description)
-- **upgrade-all-apps.ps1** : (aucun résumé)
-  - (aucune description)
+FreshDesk vise à offrir un **outil de réparation intelligent** pour Windows, capable de :
 
-### 📂 Network
-- **clear-proxy-settings.ps1** : (aucun résumé)
-  - (aucune description)
-- **export-network-info.ps1** : (aucun résumé)
-  - (aucune description)
-- **flush-dns.ps1** : (aucun résumé)
-  - (aucune description)
-- **network-diagnose.ps1** : (aucun résumé)
-  - (aucune description)
-- **network-profile-public.ps1** : (aucun résumé)
-  - (aucune description)
-- **purge-ipv6-cache.ps1** : (aucun résumé)
-  - (aucune description)
-- **renew-ip.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-firewall-rules.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-network-stack.ps1** : (aucun résumé)
-  - (aucune description)
+- Identifier rapidement des dysfonctionnements (réseau, BSOD, performances)
+- Exécuter automatiquement les bonnes corrections
+- Logger chaque action de manière centralisée
+- Fournir des outils de rollback sur les actions critiques
+- Fournir une base modulaire facilement extensible
 
-### 📂 Performance
-- **check-ssd-optimizations.ps1** : (aucun résumé)
-  - (aucune description)
-- **clean-directx-cache.ps1** : (aucun résumé)
-  - (aucune description)
-- **clean-xbox-cache.ps1** : (aucun résumé)
-  - (aucune description)
-- **disable-indexing.ps1** : (aucun résumé)
-  - (aucune description)
-- **disable-startup-services.ps1** : (aucun résumé)
-  - (aucune description)
-- **enable-fastboot.ps1** : (aucun résumé)
-  - (aucune description)
-- **enable-ultimate-performance.ps1** : (aucun résumé)
-  - (aucune description)
-- **is-disk-ssd.ps1** : (aucun résumé)
-  - (aucune description)
-- **top-processes.ps1** : (aucun résumé)
-  - (aucune description)
+---
 
-### 📂 Security
-- **check-defender-status.ps1** : (aucun résumé)
-  - (aucune description)
-- **check-uac-status.ps1** : (aucun résumé)
-  - (aucune description)
-- **list-admin-users.ps1** : (aucun résumé)
-  - (aucune description)
-- **list-runonce-keys.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-bitlocker-services.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-security-policies.ps1** : (aucun résumé)
-  - (aucune description)
-- **scan-defender.ps1** : (aucun résumé)
-  - (aucune description)
-- **scan-hidden-tasks.ps1** : (aucun résumé)
-  - (aucune description)
+## 🧬 Fonctionnalités principales
 
-### 📂 System
-- **clear-icon-cache.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-color-profiles.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-display.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-file-associations.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-print-queue.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-taskbar.ps1** : (aucun résumé)
-  - (aucune description)
-- **reset-wmi.ps1** : (aucun résumé)
-  - (aucune description)
-- **rollback-example.ps1** : (aucun résumé)
-  - (aucune description)
-- **shutdown-restart.ps1** : (aucun résumé)
-  - (aucune description)
+### ⚙️ Moteur dynamique
 
-### 📂 Test
-- **simulate-script-failure.ps1** : (aucun résumé)
-  - (aucune description)
-- **simulate-script-long.ps1** : (aucun résumé)
-  - (aucune description)
+- Chargement automatique de tous les scripts du dossier `/scripts`
+- Exécution directe avec `-RunScript "nom"`
+- Journalisation détaillée via `logger.psm1`
 
-### 📂 Undo
-- **undo-reset-network.ps1** : (aucun résumé)
-  - (aucune description)
+### 🧭 Interface CLI interactive
+
+- Menu `menu.ps1` avec sélection numérotée
+- Navigation par catégorie (à venir)
+- Affichage des métadonnées des scripts (.SYNOPSIS, .DESCRIPTION)
+- Retour menu / quitter / info / exécuter
+
+### 📂 Organisation des scripts
+
+- **Diagnostics** : vérifie les crashs, services, drivers
+- **Network** : corrige les problèmes de connectivité
+- **Maintenance** : nettoie, réinitialise, désactive
+- **Performance** : accélère le démarrage, supprime les lenteurs
+- **Security** : vérifie l’UAC, BitLocker, Defender
+- **Undo** : rollback sur les scripts critiques
+
+### ✅ Validation et qualité
+
+- Tous les scripts doivent respecter un template strict :
+  - `.SYNOPSIS`, `.DESCRIPTION`, `.AUTHOR`, `.REQUIRES`, `.DEPENDENCIES`, `.RESTART`
+- Validation automatique (`validate-all.ps1` + `validator-strict.ps1`)
+- Tests automatisés :
+  - Unitaire : syntaxe, métadonnées, duplications
+  - Intégration : exécution réelle, logs, erreurs simulées
+
+### 📈 Logs & rapports
+
+- `execution-log.csv` : log d'exécution brut (script, date, succès)
+- `errors.log` : erreurs critiques
+- `execution-summary.html` : rapport interactif
+
+---
+
+## 🧱 Arborescence du projet
+
+```
+FreshDesk/
+├── engine/               # Moteur principal (engine.ps1)
+├── cli/                  # Menu interactif CLI
+├── scripts/              # Tous les scripts classés par thème
+├── modules/              # Logger, autoload
+├── validator/            # Validateurs stricts
+├── tests/                # Unitaires + intégration + rollback
+├── logs/                 # Logs et rapports
+├── settings.json         # Paramètres du moteur
+├── CHANGELOG.md          # Historique manuel
+├── LICENSE               # Licence MIT
+└── README.md             # Ce fichier
+```
+
+---
+
+## 🚀 Démarrage rapide
+
+### 1. Cloner le dépôt
+
+```bash
+git clone https://github.com/Rhukyum/FreshDesk.git
+cd FreshDesk
+```
+
+### 2. Lancer le moteur
+
+```powershell
+.\engine\engine.ps1
+```
+
+### 3. Lancer un script directement
+
+```powershell
+.\engine\engine.ps1 -RunScript "reset-network"
+```
+
+### 4. Menu interactif CLI
+
+```powershell
+.\cli\menu.ps1
+```
+
+---
+
+## 🧪 Tests automatisés
+
+### Lancer tous les scripts (test d’intégration)
+
+```powershell
+.	ests\integration	est-run-all-scripts.ps1
+```
+
+### Tester la validité des scripts de rollback
+
+```powershell
+.	ests\integration	est-undo-validity.ps1
+```
+
+### Vérifier la structure des logs HTML
+
+```powershell
+.	ests\integration	est-log-html-refresh.ps1
+```
+
+---
+
+## ✅ Validation qualité
+
+```powershell
+.alidatoralidator-strict.ps1
+```
+
+Ce script vérifie que tous les scripts PowerShell possèdent :
+
+- .SYNOPSIS
+- .DESCRIPTION
+- .AUTHOR
+- .REQUIRES
+- .DEPENDENCIES
+- .RESTART
+
+---
+
+## 📎 Bonnes pratiques de contribution
+
+Tu veux contribuer ? Super 🎉 Voici les règles :
+
+1. Forke ce dépôt
+2. Crée une branche (`feature/ma-fonction`)
+3. Utilise le générateur `tools/new-script.ps1` si disponible
+4. Respecte la structure des métadonnées
+5. Teste avec `validate-all.ps1` avant pull request
+
+---
+
+## 📅 Roadmap
+
+- [x] CLI interactive
+- [x] Logger centralisé
+- [x] Tests automatisés
+- [ ] Interface graphique (WinForms ou PS2EXE)
+- [ ] Système de mise à jour automatique
+- [ ] Catégorisation dynamique
+- [ ] Génération automatique de documentation
+
+---
+
+## 📝 Licence
+
+Distribué sous licence MIT.
+
+---
+
+## 🔗 Liens utiles
+
+- [PowerShell Documentation](https://learn.microsoft.com/powershell/)
+- [Markdown Cheatsheet](https://www.markdownguide.org/cheat-sheet/)

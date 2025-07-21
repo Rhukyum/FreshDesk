@@ -1,1 +1,0 @@
-# Generate HTML test report
