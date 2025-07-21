@@ -1,37 +1,32 @@
-<#
-.SYNOPSIS
-    Menu CLI interactif pour FixShell.
-.DESCRIPTION
-    Permet d’exécuter les scripts via interface console.
-.AUTHOR
-    FixShell Team
-#>
+function Show-Menu {
+    $scripts = Get-ChildItem "$PSScriptRoot\..\scripts" -Recurse -Filter *.ps1
+    $choices = @{}
+    $i = 1
+    foreach ($script in $scripts) {
+        $choices[$i] = $script
+        Write-Host "$i. $($script.BaseName)"
+        $i++
+    }
+    Write-Host "[i] Info d’un script"
+    Write-Host "[q] Quitter"
+    return $choices
+}
 
-do {
-    Clear-Host
-    Write-Host "🛠️  FixShell — Menu Principal" -ForegroundColor Cyan
-    Write-Host "1. Lister les scripts disponibles"
-    Write-Host "2. Exécuter un script par son nom"
-    Write-Host "T. Lancer tous les tests"
-    Write-Host "Q. Quitter"
-    $choice = Read-Host "Choix"
+while ($true) {
+    $choices = Show-Menu
+    $choice = Read-Host "Choisissez un script ou une option"
 
-    switch ($choice.ToUpper()) {
-        '1' {
-            $list = & "$PSScriptRoot/../engine/engine.ps1"
-            (Get-ChildItem "$PSScriptRoot/../scripts/" -Filter *.ps1).Name
-            Pause
-        }
-        '2' {
-            $script = Read-Host "Nom exact du script"
-            & "$PSScriptRoot/../engine/engine.ps1" -RunScript $script
-            Pause
-        }
-        'T' {
-            Write-Host "`n🧪 Tests unitaires + intégration..." -ForegroundColor Cyan
-            & "$PSScriptRoot/../tests/run-unit-tests.ps1"
-            & "$PSScriptRoot/../tests/run-integration-tests.ps1"
-            Pause
+    if ($choice -eq "q") { break }
+    elseif ($choice -eq "i") {
+        $n = Read-Host "Numéro du script pour afficher les métadonnées"
+        if ($choices.ContainsKey([int]$n)) {
+            $content = Get-Content $choices[$n].FullName -Raw
+            $content -match "\.SYNOPSIS\s+(.*)" | Out-Null
+            Write-Host "SYNOPSIS: $($Matches[1])"
         }
     }
-} until ($choice -eq 'Q')
+    elseif ($choices.ContainsKey([int]$choice)) {
+        & $choices[$choice].FullName
+        Read-Host "Appuyez sur Entrée pour continuer"
+    }
+}
