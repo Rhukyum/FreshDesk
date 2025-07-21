@@ -1,1 +1,0 @@
-# Exemple script valide
