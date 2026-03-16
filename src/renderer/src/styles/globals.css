@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+    user-select: none;
+    -webkit-app-region: no-drag;
+  }
+
+  :root {
+    --scrollbar-width: 6px;
+    --scrollbar-radius: 3px;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: var(--scrollbar-width);
+    height: var(--scrollbar-width);
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: var(--scrollbar-radius);
+  }
+
+  .noob-mode ::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+  }
+
+  .expert-mode ::-webkit-scrollbar-thumb {
+    background: #334155;
+  }
+}
+
+@layer components {
+  /* Noob Mode */
+  .noob-mode {
+    @apply bg-noob-bg text-noob-text;
+  }
+
+  .noob-card {
+    @apply bg-noob-card border border-noob-border rounded-2xl p-5 cursor-pointer
+           transition-all duration-200 hover:shadow-lg hover:border-noob-primary/30
+           hover:-translate-y-1 active:scale-95;
+  }
+
+  .noob-btn-primary {
+    @apply bg-noob-primary hover:bg-noob-primary-hover text-white font-semibold
+           rounded-xl px-6 py-3 transition-all duration-200
+           hover:shadow-lg hover:shadow-noob-primary/25 active:scale-95;
+  }
+
+  .noob-btn-secondary {
+    @apply bg-noob-accent border border-noob-border text-noob-text font-medium
+           rounded-xl px-5 py-2.5 transition-all duration-200
+           hover:border-noob-primary/40 hover:bg-noob-primary/5 active:scale-95;
+  }
+
+  /* Expert Mode */
+  .expert-mode {
+    @apply bg-expert-bg text-expert-text;
+  }
+
+  .expert-panel {
+    @apply bg-expert-surface border border-expert-border;
+  }
+
+  .expert-row {
+    @apply border-b border-expert-border hover:bg-expert-surface-hover
+           transition-colors duration-150 cursor-pointer;
+  }
+
+  .expert-btn {
+    @apply bg-expert-accent/10 hover:bg-expert-accent/20 text-expert-accent
+           border border-expert-accent/30 rounded-lg px-3 py-1.5 text-sm
+           font-medium transition-all duration-150 active:scale-95;
+  }
+
+  .terminal {
+    @apply bg-expert-terminal text-expert-terminal-text font-mono text-sm
+           leading-relaxed;
+  }
+
+  /* Risk badges */
+  .risk-low {
+    @apply bg-risk-low/15 text-risk-low border border-risk-low/30;
+  }
+
+  .risk-medium {
+    @apply bg-risk-medium/15 text-risk-medium border border-risk-medium/30;
+  }
+
+  .risk-high {
+    @apply bg-risk-high/15 text-risk-high border border-risk-high/30;
+  }
+
+  .risk-critical {
+    @apply bg-risk-critical/15 text-risk-critical border border-risk-critical/30;
+  }
+
+  /* Title bar drag region */
+  .drag-region {
+    -webkit-app-region: drag;
+  }
+
+  .no-drag {
+    -webkit-app-region: no-drag;
+  }
+}
