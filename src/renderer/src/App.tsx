@@ -18,6 +18,9 @@ declare global {
       getSystemStats: () => Promise<import('./store/app.store').SystemStats>
       getAdminInfo: () => Promise<import('./store/app.store').AdminInfo>
       getLogs: (last?: number) => Promise<import('./store/app.store').LogEntry[]>
+      exportLogs: () => Promise<boolean>
+      getSettings: () => Promise<{ mode: string }>
+      saveSettings: (s: { mode: string }) => Promise<void>
       onOutputData: (cb: (data: { line: string; type: 'stdout' | 'stderr' }) => void) => () => void
       onOutputDone: (cb: (data: { success: boolean; duration: number; exitCode: number }) => void) => () => void
       onOutputProgress: (cb: (data: { percent: number; message: string; step: number; total: number; currentId?: string }) => void) => () => void
@@ -29,9 +32,14 @@ declare global {
 }
 
 export default function App() {
-  const { mode, setCommands, setAdminInfo, appendOutput, setIsRunning, setCurrentCommandId, setProgress, setLastSuccess, clearOutput } = useAppStore()
+  const { mode, setMode, setCommands, setAdminInfo, appendOutput, setIsRunning, setCurrentCommandId, setProgress, setLastSuccess, clearOutput } = useAppStore()
 
   useEffect(() => {
+    // Load saved mode preference
+    window.api.getSettings().then(({ mode }) => {
+      if (mode === 'expert' || mode === 'noob') setMode(mode)
+    })
+
     // Load all commands
     window.api.getAllCommands().then(setCommands)
 

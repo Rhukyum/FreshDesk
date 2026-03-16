@@ -1,8 +1,10 @@
 import { app, BrowserWindow, shell, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import { autoUpdater } from 'electron-updater'
 import { registerIpcHandlers } from './ipc-handlers'
 import { setupLogger } from './utils/logger'
+import { loadSettings, saveSettings } from './utils/settings'
 import log from 'electron-log'
 
 function createWindow(): void {
@@ -64,11 +66,21 @@ app.whenReady().then(() => {
 
   registerIpcHandlers()
 
+  // Settings IPC
+  ipcMain.handle('settings:get', () => loadSettings())
+  ipcMain.handle('settings:set', (_e, s: { mode: string }) => saveSettings(s))
+
   createWindow()
 
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+
+  // Auto-updater (production only)
+  if (!is.dev) {
+    autoUpdater.logger = log
+    autoUpdater.checkForUpdatesAndNotify()
+  }
 
   log.info('FreshDesk v2.0 started')
 })

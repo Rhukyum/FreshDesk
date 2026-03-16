@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useAppStore } from '../../store/app.store'
 import { cn } from '../../lib/utils'
-import { RefreshCw } from 'lucide-react'
+import { RefreshCw, Download } from 'lucide-react'
 
 export default function LogViewer() {
   const { logs, setLogs } = useAppStore()
@@ -19,12 +19,22 @@ export default function LogViewer() {
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between px-3 py-2 border-b border-expert-border bg-expert-surface flex-shrink-0">
         <span className="text-xs font-semibold text-expert-muted uppercase tracking-wider">Logs</span>
-        <button
-          onClick={loadLogs}
-          className="p-1.5 text-expert-muted hover:text-expert-text rounded transition-colors"
-        >
-          <RefreshCw className="w-3.5 h-3.5" />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => window.api.exportLogs()}
+            title="Exporter en CSV"
+            className="p-1.5 text-expert-muted hover:text-expert-text rounded transition-colors"
+          >
+            <Download className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={loadLogs}
+            title="Rafraîchir"
+            className="p-1.5 text-expert-muted hover:text-expert-text rounded transition-colors"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto">

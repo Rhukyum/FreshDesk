@@ -3,12 +3,10 @@
   "productName": "FreshDesk",
   "copyright": "MIT",
   "directories": {
-    "buildResources": "resources",
     "output": "release"
   },
   "files": [
-    "out/**/*",
-    "resources/**/*"
+    "out/**/*"
   ],
   "win": {
     "target": [
@@ -17,13 +15,16 @@
         "arch": ["x64"]
       }
     ],
-    "icon": "resources/icon.ico",
     "requestedExecutionLevel": "requireAdministrator"
   },
   "nsis": {
     "oneClick": false,
     "allowToChangeInstallationDirectory": true,
-    "installerIcon": "resources/icon.ico",
     "shortcutName": "FreshDesk"
+  },
+  "publish": {
+    "provider": "github",
+    "owner": "Rhukyum",
+    "repo": "FreshDesk"
   }
 }
