@@ -8,6 +8,7 @@ export default function TopBar() {
 
   const handleSetMode = (newMode: 'noob' | 'expert') => {
     setMode(newMode)
+    window.api.saveSettings({ mode: newMode })
   }
 
   return (

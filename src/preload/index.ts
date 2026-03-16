@@ -16,6 +16,7 @@ const api = {
 
   // Logs
   getLogs: (last?: number) => ipcRenderer.invoke('logs:get', last),
+  exportLogs: () => ipcRenderer.invoke('logs:export-csv'),
 
   // Events (main → renderer)
   onOutputData: (cb: (data: { line: string; type: 'stdout' | 'stderr' }) => void) => {
@@ -32,6 +33,10 @@ const api = {
     ipcRenderer.on('output:progress', (_e, data) => cb(data))
     return () => ipcRenderer.removeAllListeners('output:progress')
   },
+
+  // Settings (persist noob/expert mode)
+  getSettings: () => ipcRenderer.invoke('settings:get'),
+  saveSettings: (s: { mode: string }) => ipcRenderer.invoke('settings:set', s),
 
   // Window controls
   minimizeWindow: () => ipcRenderer.send('window:minimize'),

@@ -1,4 +1,6 @@
-import { ipcMain, BrowserWindow } from 'electron'
+import { ipcMain, BrowserWindow, dialog, app } from 'electron'
+import { writeFileSync } from 'fs'
+import { join } from 'path'
 import { allCommands, getCommandById, getCommandsMeta, getNoobCommands, getFixEverythingOrder } from './commands'
 import { addLog, getLogs } from './utils/logger'
 import { isAdmin, getSystemInfo } from './utils/admin'
@@ -206,4 +208,20 @@ export function registerIpcHandlers(): void {
   // --- Logs ---
   ipcMain.handle('logs:get', (_event, last = 100) => getLogs(last))
   ipcMain.handle('logs:clear', () => { /* clear implemented in logger */ })
+
+  ipcMain.handle('logs:export-csv', async () => {
+    const { filePath } = await dialog.showSaveDialog({
+      title: 'Exporter les logs',
+      defaultPath: join(app.getPath('desktop'), `freshdesk-logs-${Date.now()}.csv`),
+      filters: [{ name: 'CSV', extensions: ['csv'] }]
+    })
+    if (!filePath) return false
+    const logs = getLogs(500)
+    const rows = ['Timestamp,Level,Command,Message,Duration(ms)']
+      .concat(logs.map(l =>
+        `"${l.timestamp}","${l.level}","${l.commandId}","${l.message.replace(/"/g, '""')}","${l.duration ?? ''}"`
+      ))
+    writeFileSync(filePath, rows.join('\n'), 'utf8')
+    return true
+  })
 }

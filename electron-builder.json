@@ -25,5 +25,10 @@
     "allowToChangeInstallationDirectory": true,
     "installerIcon": "resources/icon.ico",
     "shortcutName": "FreshDesk"
+  },
+  "publish": {
+    "provider": "github",
+    "owner": "Rhukyum",
+    "repo": "FreshDesk"
   }
 }
