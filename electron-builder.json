@@ -10,6 +10,7 @@
     "out/**/*"
   ],
   "win": {
+    "icon": "resources/icon.png",
     "target": [
       {
         "target": "nsis",

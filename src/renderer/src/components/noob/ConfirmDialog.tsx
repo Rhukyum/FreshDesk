@@ -23,13 +23,15 @@ export default function ConfirmDialog({ open, title, description, onConfirm, onC
             className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"
             onClick={onCancel}
           />
-          {/* Dialog */}
+          {/* Dialog wrapper — centering must be on a non-animated element
+               because Framer Motion overrides CSS transform via inline styles */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 8 }}
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[360px]"
+            className="relative w-[360px] pointer-events-auto"
           >
             <div className="bg-white rounded-2xl shadow-2xl p-6 border border-noob-border">
               <div className="flex items-start gap-3 mb-4">
@@ -57,6 +59,7 @@ export default function ConfirmDialog({ open, title, description, onConfirm, onC
               </div>
             </div>
           </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>,
