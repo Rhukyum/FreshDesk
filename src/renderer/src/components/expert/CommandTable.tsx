@@ -8,6 +8,7 @@ interface Props {
   onRun: (id: string) => void
   selectedId: string | null
   onSelect: (cmd: CommandMeta) => void
+  onRunAll: () => void
 }
 
 const categoryLabels: Record<string, string> = {
@@ -19,7 +20,7 @@ const categoryLabels: Record<string, string> = {
   system: 'Système'
 }
 
-export default function CommandTable({ onRun, selectedId, onSelect }: Props) {
+export default function CommandTable({ onRun, selectedId, onSelect, onRunAll }: Props) {
   const { commands, activeCategory, isRunning, currentCommandId, searchQuery, setSearchQuery } = useAppStore()
 
   const filtered = commands.filter((c) => {
@@ -35,9 +36,9 @@ export default function CommandTable({ onRun, selectedId, onSelect }: Props) {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Search bar */}
-      <div className="px-3 py-2 border-b border-expert-border">
-        <div className="flex items-center gap-2 bg-expert-bg rounded-lg px-3 py-1.5">
+      {/* Search bar + Run All button */}
+      <div className="px-3 py-2 border-b border-expert-border flex items-center gap-2">
+        <div className="flex items-center gap-2 bg-expert-bg rounded-lg px-3 py-1.5 flex-1 min-w-0">
           <Search className="w-3.5 h-3.5 text-expert-muted flex-shrink-0" />
           <input
             type="text"
@@ -52,6 +53,15 @@ export default function CommandTable({ onRun, selectedId, onSelect }: Props) {
             </button>
           )}
         </div>
+        <button
+          onClick={onRunAll}
+          disabled={isRunning}
+          title="Tout lancer"
+          className="flex items-center gap-1.5 expert-btn py-1.5 px-3 flex-shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          <Play className="w-3.5 h-3.5" />
+          <span className="text-xs whitespace-nowrap">Tout lancer</span>
+        </button>
       </div>
 
       {/* Table header */}

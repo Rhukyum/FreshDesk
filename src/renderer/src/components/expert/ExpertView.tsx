@@ -5,132 +5,178 @@ import Sidebar from './Sidebar'
 import CommandTable from './CommandTable'
 import OutputPanel from './OutputPanel'
 import LogViewer from './LogViewer'
+import RunAllModal from './RunAllModal'
 import RiskBadge from '../shared/RiskBadge'
-import { Info, RotateCw, Terminal, ScrollText } from 'lucide-react'
+import { Info, RotateCw, Terminal, ScrollText, ChevronDown, ChevronUp, Play } from 'lucide-react'
 
 interface Props {
   onRun: (id: string) => void
+  onRunAll: (ids: string[]) => void
 }
 
 type BottomTab = 'output' | 'logs'
 
-export default function ExpertView({ onRun }: Props) {
+export default function ExpertView({ onRun, onRunAll }: Props) {
   const [selectedCommand, setSelectedCommand] = useState<CommandMeta | null>(null)
   const [bottomTab, setBottomTab] = useState<BottomTab>('output')
+  const [bottomCollapsed, setBottomCollapsed] = useState(false)
+  const [runAllOpen, setRunAllOpen] = useState(false)
 
   return (
-    <div className="flex h-full">
-      {/* Left sidebar: 220px */}
-      <div className="w-[220px] flex-shrink-0">
-        <Sidebar />
-      </div>
+    <>
+      <div className="flex h-full">
+        {/* Left sidebar: 220px */}
+        <div className="w-[220px] flex-shrink-0">
+          <Sidebar />
+        </div>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Command list + detail - top portion */}
-        <div className="flex flex-1 min-h-0" style={{ maxHeight: '55%' }}>
-          {/* Command table */}
-          <div className="flex-1 min-w-0">
-            <CommandTable
-              onRun={onRun}
-              selectedId={selectedCommand?.id ?? null}
-              onSelect={setSelectedCommand}
-            />
+        {/* Main content */}
+        <div className="flex-1 flex flex-col min-w-0">
+          {/* Command list + detail - top portion */}
+          <div
+            className="flex min-h-0 transition-all duration-200"
+            style={{ flex: bottomCollapsed ? '1' : '0 0 55%' }}
+          >
+            {/* Command table */}
+            <div className="flex-1 min-w-0">
+              <CommandTable
+                onRun={onRun}
+                selectedId={selectedCommand?.id ?? null}
+                onSelect={setSelectedCommand}
+                onRunAll={() => setRunAllOpen(true)}
+              />
+            </div>
+
+            {/* Command detail panel */}
+            <AnimatePresence>
+              {selectedCommand && (
+                <motion.div
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ width: 240, opacity: 1 }}
+                  exit={{ width: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex-shrink-0 overflow-hidden border-l border-expert-border"
+                >
+                  <div className="w-60 h-full p-4 space-y-4 overflow-y-auto bg-expert-panel">
+                    <div>
+                      <h3 className="text-expert-text font-semibold text-sm mb-1">
+                        {selectedCommand.label}
+                      </h3>
+                      <p className="text-expert-muted text-xs leading-relaxed">
+                        {selectedCommand.description}
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <InfoRow icon={<Info className="w-3 h-3" />} label="Risque">
+                        <RiskBadge risk={selectedCommand.risk} />
+                      </InfoRow>
+                      <InfoRow icon={<RotateCw className="w-3 h-3" />} label="Rollback">
+                        <span
+                          className={`text-xs font-medium ${selectedCommand.hasRollback ? 'text-green-400' : 'text-expert-muted'}`}
+                        >
+                          {selectedCommand.hasRollback ? 'Oui' : 'Non'}
+                        </span>
+                      </InfoRow>
+                      <InfoRow icon={<Info className="w-3 h-3" />} label="Admin requis">
+                        <span
+                          className={`text-xs font-medium ${selectedCommand.adminRequired ? 'text-amber-400' : 'text-expert-muted'}`}
+                        >
+                          {selectedCommand.adminRequired ? 'Oui' : 'Non'}
+                        </span>
+                      </InfoRow>
+                      <InfoRow icon={<Info className="w-3 h-3" />} label="Mode">
+                        <span className="text-xs text-expert-muted capitalize">
+                          {selectedCommand.mode}
+                        </span>
+                      </InfoRow>
+                    </div>
+
+                    <button onClick={() => onRun(selectedCommand.id)} className="w-full expert-btn py-2">
+                      ▶ Exécuter
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
-          {/* Command detail panel */}
-          <AnimatePresence>
-            {selectedCommand && (
-              <motion.div
-                initial={{ width: 0, opacity: 0 }}
-                animate={{ width: 240, opacity: 1 }}
-                exit={{ width: 0, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="flex-shrink-0 overflow-hidden border-l border-expert-border"
+          {/* Divider */}
+          <div className="h-px bg-expert-border flex-shrink-0" />
+
+          {/* Bottom panel: output + logs */}
+          <div
+            className="flex flex-col min-h-0 transition-all duration-200"
+            style={{ flex: bottomCollapsed ? '0 0 36px' : '1' }}
+          >
+            {/* Tabs + collapse button */}
+            <div className="flex items-center border-b border-expert-border bg-expert-surface flex-shrink-0">
+              <button
+                onClick={() => setBottomTab('output')}
+                className={`flex items-center gap-1.5 px-4 py-2 text-xs font-medium border-b-2 transition-colors ${
+                  bottomTab === 'output'
+                    ? 'border-expert-accent text-expert-accent'
+                    : 'border-transparent text-expert-muted hover:text-expert-text'
+                }`}
               >
-                <div className="w-60 h-full p-4 space-y-4 overflow-y-auto bg-expert-panel">
-                  <div>
-                    <h3 className="text-expert-text font-semibold text-sm mb-1">
-                      {selectedCommand.label}
-                    </h3>
-                    <p className="text-expert-muted text-xs leading-relaxed">
-                      {selectedCommand.description}
-                    </p>
-                  </div>
+                <Terminal className="w-3.5 h-3.5" />
+                Terminal
+              </button>
+              <button
+                onClick={() => setBottomTab('logs')}
+                className={`flex items-center gap-1.5 px-4 py-2 text-xs font-medium border-b-2 transition-colors ${
+                  bottomTab === 'logs'
+                    ? 'border-expert-accent text-expert-accent'
+                    : 'border-transparent text-expert-muted hover:text-expert-text'
+                }`}
+              >
+                <ScrollText className="w-3.5 h-3.5" />
+                Logs
+              </button>
 
-                  <div className="space-y-2">
-                    <InfoRow icon={<Info className="w-3 h-3" />} label="Risque">
-                      <RiskBadge risk={selectedCommand.risk} />
-                    </InfoRow>
-                    <InfoRow icon={<RotateCw className="w-3 h-3" />} label="Rollback">
-                      <span className={`text-xs font-medium ${selectedCommand.hasRollback ? 'text-green-400' : 'text-expert-muted'}`}>
-                        {selectedCommand.hasRollback ? 'Oui' : 'Non'}
-                      </span>
-                    </InfoRow>
-                    <InfoRow icon={<Info className="w-3 h-3" />} label="Admin requis">
-                      <span className={`text-xs font-medium ${selectedCommand.adminRequired ? 'text-amber-400' : 'text-expert-muted'}`}>
-                        {selectedCommand.adminRequired ? 'Oui' : 'Non'}
-                      </span>
-                    </InfoRow>
-                    <InfoRow icon={<Info className="w-3 h-3" />} label="Mode">
-                      <span className="text-xs text-expert-muted capitalize">{selectedCommand.mode}</span>
-                    </InfoRow>
-                  </div>
+              {/* Collapse button */}
+              <button
+                onClick={() => setBottomCollapsed((v) => !v)}
+                title={bottomCollapsed ? 'Agrandir' : 'Réduire'}
+                className="ml-auto mr-2 p-1.5 text-expert-muted hover:text-expert-text rounded-md hover:bg-expert-bg transition-colors"
+              >
+                {bottomCollapsed ? (
+                  <ChevronUp className="w-3.5 h-3.5" />
+                ) : (
+                  <ChevronDown className="w-3.5 h-3.5" />
+                )}
+              </button>
+            </div>
 
-                  <button
-                    onClick={() => onRun(selectedCommand.id)}
-                    className="w-full expert-btn py-2"
-                  >
-                    ▶ Exécuter
-                  </button>
-                </div>
-              </motion.div>
+            {/* Panel content */}
+            {!bottomCollapsed && (
+              <div className="flex-1 min-h-0">
+                {bottomTab === 'output' ? <OutputPanel /> : <LogViewer />}
+              </div>
             )}
-          </AnimatePresence>
-        </div>
-
-        {/* Divider */}
-        <div className="h-px bg-expert-border flex-shrink-0" />
-
-        {/* Bottom panel: output + logs */}
-        <div className="flex flex-col flex-1 min-h-0">
-          {/* Tabs */}
-          <div className="flex items-center border-b border-expert-border bg-expert-surface flex-shrink-0">
-            <button
-              onClick={() => setBottomTab('output')}
-              className={`flex items-center gap-1.5 px-4 py-2 text-xs font-medium border-b-2 transition-colors ${
-                bottomTab === 'output'
-                  ? 'border-expert-accent text-expert-accent'
-                  : 'border-transparent text-expert-muted hover:text-expert-text'
-              }`}
-            >
-              <Terminal className="w-3.5 h-3.5" />
-              Terminal
-            </button>
-            <button
-              onClick={() => setBottomTab('logs')}
-              className={`flex items-center gap-1.5 px-4 py-2 text-xs font-medium border-b-2 transition-colors ${
-                bottomTab === 'logs'
-                  ? 'border-expert-accent text-expert-accent'
-                  : 'border-transparent text-expert-muted hover:text-expert-text'
-              }`}
-            >
-              <ScrollText className="w-3.5 h-3.5" />
-              Logs
-            </button>
-          </div>
-
-          {/* Panel content */}
-          <div className="flex-1 min-h-0">
-            {bottomTab === 'output' ? <OutputPanel /> : <LogViewer />}
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Run All Modal */}
+      <RunAllModal
+        open={runAllOpen}
+        onClose={() => setRunAllOpen(false)}
+        onRun={onRunAll}
+      />
+    </>
   )
 }
 
-function InfoRow({ icon, label, children }: { icon: React.ReactNode; label: string; children: React.ReactNode }) {
+function InfoRow({
+  icon,
+  label,
+  children
+}: {
+  icon: React.ReactNode
+  label: string
+  children: React.ReactNode
+}) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-1.5 text-expert-muted text-xs">

@@ -303,16 +303,43 @@ Le mode est stocké comme classe CSS sur l'élément racine (`noob-mode` / `expe
 
 ---
 
-## 📅 Roadmap
+## Nouveautés v2.0.0
+
+- Logo FreshDesk personnalisé (SVG, composant React `FreshDeskLogo`)
+- Correction du badge Admin qui chevauchait les boutons de fenêtre (suppression du `titleBarOverlay` natif)
+- Boutons de fenêtre (min/max/close) redessinés avec hover coloré
+- Avertissement affiché lors du passage en mode Expert
+- Correction du compteur d'actions par catégorie (bug : affichait le total au lieu du compte par catégorie)
+- Mode Expert : bouton **"Tout lancer"** avec sélection multiple (cocher/décocher chaque commande)
+- Mode Expert : panneau Terminal/Logs réductible via bouton de collapse
+- Version 2.0.0
+
+## Icône de l'application
+
+Le logo source est disponible en SVG dans `resources/icon.svg` et `src/renderer/src/assets/logo.svg`.
+
+Pour générer le fichier `resources/icon.ico` requis pour le build Windows :
+```bash
+# Via ImageMagick :
+magick resources/icon.svg -resize 256x256 resources/icon.ico
+
+# Ou via un outil en ligne (ICO Convert, etc.)
+```
+
+## Roadmap
 
 - [x] Application Electron + React v2
-- [x] Mode Noob / Expert
+- [x] Mode Simple / Expert
+- [x] Logo et identité visuelle FreshDesk
 - [x] Stats système temps réel
 - [x] Terminal intégré avec output streamé
 - [x] Historique des logs
 - [x] Export des logs en CSV
 - [x] Système de mise à jour automatique (electron-updater)
-- [x] Persistance de la préférence de mode (noob/expert)
+- [x] Persistance de la préférence de mode
 - [x] Build + installateur NSIS
+- [x] Bouton "Tout lancer" avec sélection multiple (mode Expert)
+- [x] Panneau terminal réductible (mode Expert)
+- [x] Avertissement mode Expert
 - [ ] Profils de commandes personnalisés
 - [ ] Support macOS / Linux (commandes adaptées)

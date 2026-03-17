@@ -119,7 +119,7 @@ export default function App() {
               transition={{ duration: 0.2 }}
               className="h-full"
             >
-              <ExpertView onRun={runCommand} />
+              <ExpertView onRun={runCommand} onRunAll={runAll} />
             </motion.div>
           )}
         </AnimatePresence>
