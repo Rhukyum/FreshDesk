@@ -46,6 +46,7 @@ function setupAutoUpdater(): void {
   autoUpdater.autoDownload = false
   autoUpdater.autoInstallOnAppQuit = true
 
+
   autoUpdater.on('update-available', (info) => {
     log.info(`Update available: v${info.version}`)
     const win = BrowserWindow.getAllWindows()[0]

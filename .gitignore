@@ -1,6 +1,42 @@
+# Build outputs
 node_modules/
 dist/
 out/
 release/
+
+# Logs
 *.log
+logs/
+
+# Variables d'environnement — NE JAMAIS COMMITTER
 .env
+.env.*
+.env.local
+.env.*.local
+
+# Clés et secrets
+*.pem
+*.key
+*.p12
+*.pfx
+*.cert
+*.crt
+secrets.json
+config.secret.*
+
+# Système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Temp
+*.tmp
+*.temp
