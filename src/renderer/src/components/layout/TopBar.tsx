@@ -1,123 +1,229 @@
-import { Wrench, Shield, Minus, Square, X } from 'lucide-react'
+import { useState } from 'react'
+import { Shield, Minus, Square, X, AlertTriangle } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '../../store/app.store'
 import { cn } from '../../lib/utils'
+import FreshDeskLogo from '../shared/FreshDeskLogo'
 
 export default function TopBar() {
   const { mode, setMode, adminInfo } = useAppStore()
   const isNoob = mode === 'noob'
+  const [showExpertWarning, setShowExpertWarning] = useState(false)
 
   const handleSetMode = (newMode: 'noob' | 'expert') => {
+    if (newMode === 'expert' && mode !== 'expert') {
+      setShowExpertWarning(true)
+      return
+    }
     setMode(newMode)
     window.api.saveSettings({ mode: newMode })
   }
 
-  return (
-    <div
-      className={cn(
-        'flex items-center justify-between px-4 h-12 select-none drag-region flex-shrink-0',
-        isNoob
-          ? 'bg-white border-b border-noob-border'
-          : 'bg-expert-surface border-b border-expert-border'
-      )}
-    >
-      {/* Logo */}
-      <div className="flex items-center gap-2 no-drag">
-        <div
-          className={cn(
-            'w-7 h-7 rounded-lg flex items-center justify-center',
-            isNoob ? 'bg-noob-primary' : 'bg-expert-accent'
-          )}
-        >
-          <Wrench className="w-4 h-4 text-white" />
-        </div>
-        <span
-          className={cn(
-            'font-bold text-sm',
-            isNoob ? 'text-noob-text' : 'text-expert-text'
-          )}
-        >
-          FreshDesk
-        </span>
-      </div>
+  const confirmExpert = () => {
+    setShowExpertWarning(false)
+    setMode('expert')
+    window.api.saveSettings({ mode: 'expert' })
+  }
 
-      {/* Mode toggle */}
+  return (
+    <>
       <div
         className={cn(
-          'flex rounded-lg p-0.5 no-drag',
-          isNoob ? 'bg-noob-accent' : 'bg-expert-bg'
+          'flex items-center h-11 px-3 gap-2 select-none drag-region flex-shrink-0',
+          isNoob
+            ? 'bg-white border-b border-noob-border'
+            : 'bg-expert-surface border-b border-expert-border'
         )}
       >
-        <button
-          onClick={() => handleSetMode('noob')}
-          className={cn(
-            'px-4 py-1 rounded-md text-xs font-semibold transition-all duration-200',
-            isNoob
-              ? 'bg-white text-noob-primary shadow-sm'
-              : 'text-expert-muted hover:text-expert-text'
-          )}
-        >
-          Simple
-        </button>
-        <button
-          onClick={() => handleSetMode('expert')}
-          className={cn(
-            'px-4 py-1 rounded-md text-xs font-semibold transition-all duration-200',
-            !isNoob
-              ? 'bg-expert-surface text-expert-accent shadow-sm'
-              : 'text-noob-muted hover:text-noob-text'
-          )}
-        >
-          Expert
-        </button>
-      </div>
+        {/* Logo — fixed width, no shrink */}
+        <div className="flex items-center gap-2 no-drag flex-shrink-0">
+          <FreshDeskLogo size={26} />
+          <span
+            className={cn(
+              'font-bold text-sm whitespace-nowrap',
+              isNoob ? 'text-noob-text' : 'text-expert-text'
+            )}
+          >
+            FreshDesk
+          </span>
+        </div>
 
-      {/* Right: admin badge + window controls */}
-      <div className="flex items-center gap-3 no-drag">
-        {adminInfo && (
+        {/* Mode toggle — centered, can shrink */}
+        <div className="flex-1 flex justify-center no-drag">
           <div
             className={cn(
-              'flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium',
-              adminInfo.isAdmin
-                ? 'bg-green-100 text-green-700'
-                : 'bg-amber-100 text-amber-700'
+              'flex rounded-lg p-0.5',
+              isNoob ? 'bg-noob-accent' : 'bg-expert-bg'
             )}
           >
-            <Shield className="w-3 h-3" />
-            {adminInfo.isAdmin ? 'Admin' : 'Standard'}
+            <button
+              onClick={() => handleSetMode('noob')}
+              className={cn(
+                'px-4 py-1 rounded-md text-xs font-semibold transition-all duration-200 whitespace-nowrap',
+                isNoob
+                  ? 'bg-white text-noob-primary shadow-sm'
+                  : 'text-expert-muted hover:text-expert-text'
+              )}
+            >
+              Simple
+            </button>
+            <button
+              onClick={() => handleSetMode('expert')}
+              className={cn(
+                'px-4 py-1 rounded-md text-xs font-semibold transition-all duration-200 whitespace-nowrap',
+                !isNoob
+                  ? 'bg-expert-surface text-expert-accent shadow-sm'
+                  : 'text-noob-muted hover:text-noob-text'
+              )}
+            >
+              Expert
+            </button>
           </div>
-        )}
+        </div>
 
-        {/* Window controls */}
-        <div className="flex items-center gap-1">
-          <button
-            onClick={() => window.api.minimizeWindow()}
-            className={cn(
-              'w-7 h-7 flex items-center justify-center rounded-md transition-colors',
-              isNoob ? 'hover:bg-gray-100 text-gray-500' : 'hover:bg-white/10 text-expert-muted'
-            )}
-          >
-            <Minus className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={() => window.api.maximizeWindow()}
-            className={cn(
-              'w-7 h-7 flex items-center justify-center rounded-md transition-colors',
-              isNoob ? 'hover:bg-gray-100 text-gray-500' : 'hover:bg-white/10 text-expert-muted'
-            )}
-          >
-            <Square className="w-3 h-3" />
-          </button>
-          <button
-            onClick={() => window.api.closeWindow()}
-            className={cn(
-              'w-7 h-7 flex items-center justify-center rounded-md transition-colors hover:bg-red-500 hover:text-white',
-              isNoob ? 'text-gray-500' : 'text-expert-muted'
-            )}
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
+        {/* Right: admin badge + window controls — fixed, no shrink */}
+        <div className="flex items-center gap-2 no-drag flex-shrink-0">
+          {/* Admin badge */}
+          {adminInfo && (
+            <div
+              className={cn(
+                'flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap',
+                adminInfo.isAdmin
+                  ? 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/25'
+                  : 'bg-amber-500/15 text-amber-500 border border-amber-500/25'
+              )}
+            >
+              <Shield className="w-3 h-3 flex-shrink-0" />
+              {adminInfo.isAdmin ? 'Admin' : 'Standard'}
+            </div>
+          )}
+
+          {/* Window controls */}
+          <div className="flex items-center gap-0.5 ml-1">
+            <WindowBtn
+              onClick={() => window.api.minimizeWindow()}
+              title="Réduire"
+              hoverColor={isNoob ? 'hover:bg-amber-100 hover:text-amber-600' : 'hover:bg-amber-500/20 hover:text-amber-400'}
+              baseColor={isNoob ? 'text-gray-400' : 'text-expert-muted'}
+            >
+              <Minus className="w-3 h-3" />
+            </WindowBtn>
+            <WindowBtn
+              onClick={() => window.api.maximizeWindow()}
+              title="Agrandir"
+              hoverColor={isNoob ? 'hover:bg-emerald-100 hover:text-emerald-600' : 'hover:bg-emerald-500/20 hover:text-emerald-400'}
+              baseColor={isNoob ? 'text-gray-400' : 'text-expert-muted'}
+            >
+              <Square className="w-3 h-3" />
+            </WindowBtn>
+            <WindowBtn
+              onClick={() => window.api.closeWindow()}
+              title="Fermer"
+              hoverColor="hover:bg-red-500 hover:text-white"
+              baseColor={isNoob ? 'text-gray-400' : 'text-expert-muted'}
+            >
+              <X className="w-3 h-3" />
+            </WindowBtn>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Expert mode warning dialog */}
+      <AnimatePresence>
+        {showExpertWarning && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/50"
+              onClick={() => setShowExpertWarning(false)}
+            />
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 8 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="relative z-10 w-[420px] bg-white rounded-2xl shadow-2xl border border-gray-100 p-6"
+            >
+              {/* Warning icon */}
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+                  <AlertTriangle className="w-5 h-5 text-amber-600" />
+                </div>
+                <div>
+                  <h2 className="font-bold text-gray-900 text-base">Mode Expert</h2>
+                  <p className="text-xs text-gray-500">Réservé aux utilisateurs avancés</p>
+                </div>
+              </div>
+
+              <div className="space-y-2 mb-5">
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  Le mode Expert donne accès à <strong>toutes les commandes</strong>, y compris des
+                  opérations à risque élevé ou critique pouvant modifier profondément votre système.
+                </p>
+                <ul className="text-xs text-gray-500 space-y-1 pl-4">
+                  <li className="flex items-start gap-1.5">
+                    <span className="text-amber-500 mt-0.5 flex-shrink-0">⚠</span>
+                    Certaines commandes peuvent rendre le PC instable si mal utilisées
+                  </li>
+                  <li className="flex items-start gap-1.5">
+                    <span className="text-amber-500 mt-0.5 flex-shrink-0">⚠</span>
+                    Les opérations critiques ne sont pas réversibles automatiquement
+                  </li>
+                  <li className="flex items-start gap-1.5">
+                    <span className="text-amber-500 mt-0.5 flex-shrink-0">⚠</span>
+                    Utilisez uniquement si vous savez ce que vous faites
+                  </li>
+                </ul>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowExpertWarning(false)}
+                  className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={confirmExpert}
+                  className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold transition-colors shadow-sm"
+                >
+                  Je comprends, continuer
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </>
+  )
+}
+
+function WindowBtn({
+  children,
+  onClick,
+  title,
+  hoverColor,
+  baseColor
+}: {
+  children: React.ReactNode
+  onClick: () => void
+  title: string
+  hoverColor: string
+  baseColor: string
+}) {
+  return (
+    <button
+      onClick={onClick}
+      title={title}
+      className={cn(
+        'w-7 h-7 flex items-center justify-center rounded-lg transition-all duration-150',
+        baseColor,
+        hoverColor
+      )}
+    >
+      {children}
+    </button>
   )
 }

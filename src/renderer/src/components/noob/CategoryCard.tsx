@@ -69,7 +69,10 @@ export default function CategoryCard({ category, commands, onSelectCategory }: P
   const config = categoryConfig[category]
   const Icon = config.icon
   const noobCount = commands.filter(
-    (c) => (c.mode === 'noob' || c.mode === 'both') && (c.risk === 'low' || c.risk === 'medium')
+    (c) =>
+      c.category === category &&
+      (c.mode === 'noob' || c.mode === 'both') &&
+      (c.risk === 'low' || c.risk === 'medium')
   ).length
 
   return (

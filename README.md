@@ -1,4 +1,4 @@
-# 💡 FreshDesk — Répare et optimise ton PC Windows
+# FreshDesk — Répare et optimise ton PC Windows
 
 **FreshDesk** est une application gratuite pour Windows qui répare et optimise ton PC en quelques clics. Pas besoin d'être informaticien.
 
@@ -10,7 +10,7 @@
 
 ---
 
-## 📥 Installation
+## Installation
 
 ### 1. Télécharger l'installateur
 
@@ -28,53 +28,59 @@ FreshDesk se lance depuis ton bureau ou le menu Démarrer. L'application se met 
 
 ---
 
-## 🖥️ Comment ça marche
+## Comment ça marche
 
 FreshDesk propose deux interfaces selon ton niveau :
 
-### 👶 Mode Simple (par défaut)
+### Mode Simple (par défaut)
 
-- Un bouton **"Réparer et optimiser mon PC"** qui lance 6 corrections en un clic
+- Un bouton **"Réparer et optimiser mon PC"** qui lance les corrections sûres en un clic
 - Des catégories claires : Réseau, Maintenance, Performances, Sécurité, Diagnostics, Système
+- Le compteur d'actions affiché est exact et propre à chaque catégorie
 - Les actions sont expliquées en langage courant ("Réparer Internet", "Libérer de l'espace"...)
 - Confirmation avant chaque action, progression animée en temps réel
 
-### 🧑‍💻 Mode Expert
+### Mode Expert
 
-Accessible depuis le bouton en haut à droite. Ce mode donne accès à toutes les commandes avec leur sortie terminal en direct, leur niveau de risque et leurs détails techniques.
+Accessible depuis le bouton en haut à droite. Un avertissement s'affiche pour informer des risques avant d'entrer dans ce mode.
+
+- Accès à **toutes** les commandes avec sortie terminal en direct
+- Bouton **"Tout lancer"** avec sélection multiple : coche les commandes à exécuter, avec **Tout cocher** / **Tout décocher**
+- Panneau Terminal et Logs **réductible** pour agrandir la liste de commandes
+- Niveau de risque et détails techniques pour chaque commande
 
 ---
 
-## 🔧 Ce que FreshDesk peut faire
+## Ce que FreshDesk peut faire
 
 | Catégorie | Exemples d'actions |
 |-----------|-------------------|
-| 🌐 Réseau | Vider le cache DNS, renouveler l'adresse IP, réinitialiser le proxy |
-| 🔧 Maintenance | Nettoyer les fichiers temporaires, réparer l'imprimante, reset du Store Windows |
-| ⚡ Performances | Voir ce qui ralentit le PC, activer le démarrage rapide |
-| 🔒 Sécurité | Vérifier l'antivirus, scanner les virus, contrôler l'UAC |
-| 🩺 Diagnostics | Voir les crashs récents (BSOD), analyser les erreurs système, infos PC |
-| 🖥️ Système | Réparer les icônes, reset de la barre des tâches, mises à jour Windows |
+| Réseau | Vider le cache DNS, renouveler l'adresse IP, réinitialiser le proxy |
+| Maintenance | Nettoyer les fichiers temporaires, réparer l'imprimante, reset du Store Windows |
+| Performances | Voir ce qui ralentit le PC, activer le démarrage rapide |
+| Sécurité | Vérifier l'antivirus, scanner les virus, contrôler l'UAC |
+| Diagnostics | Voir les crashs récents (BSOD), analyser les erreurs système, infos PC |
+| Système | Réparer les icônes, reset de la barre des tâches, mises à jour Windows |
 
 ---
 
-## ❓ Questions fréquentes
+## Questions fréquentes
 
 **Pourquoi Windows dit "application inconnue" ?**
 C'est normal pour les applications qui ne sont pas signées numériquement. FreshDesk est open-source et sans malware.
 
 **Faut-il lancer FreshDesk en administrateur ?**
-L'application le fait automatiquement au démarrage. Certaines commandes nécessitent des droits admin (un badge vert "Admin" apparaît en haut à droite quand c'est le cas).
+L'application le fait automatiquement au démarrage. Un badge **Admin** (vert) ou **Standard** (orange) s'affiche en haut à droite.
 
 **Est-ce que FreshDesk peut casser mon PC ?**
-Toutes les actions affichent leur niveau de risque (faible / moyen / élevé / critique). Les actions critiques sont réservées au mode Expert.
+Toutes les actions affichent leur niveau de risque (faible / moyen / élevé / critique). Les actions critiques sont réservées au mode Expert, et un avertissement s'affiche avant d'y accéder.
 
 **Mes préférences sont-elles sauvegardées ?**
 Oui. FreshDesk mémorise ton mode (Simple ou Expert) entre les sessions.
 
 ---
 
-## 📝 Licence
+## Licence
 
 FreshDesk est distribué sous licence **MIT** — gratuit, open-source, pour toujours.
 
