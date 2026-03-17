@@ -46,6 +46,13 @@ function setupAutoUpdater(): void {
   autoUpdater.autoDownload = false
   autoUpdater.autoInstallOnAppQuit = true
 
+  // Repo privé : token GitHub nécessaire pour accéder aux releases
+  // Générer un token sur https://github.com/settings/tokens (scope: repo)
+  // et le définir via la variable d'environnement GH_TOKEN au moment du build
+  if (process.env.GH_TOKEN) {
+    autoUpdater.requestHeaders = { Authorization: `token ${process.env.GH_TOKEN}` }
+  }
+
   autoUpdater.on('update-available', (info) => {
     log.info(`Update available: v${info.version}`)
     const win = BrowserWindow.getAllWindows()[0]
