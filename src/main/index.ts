@@ -41,6 +41,60 @@ function createWindow(): void {
   }
 }
 
+function setupAutoUpdater(): void {
+  autoUpdater.logger = log
+  autoUpdater.autoDownload = false
+  autoUpdater.autoInstallOnAppQuit = true
+
+  autoUpdater.on('update-available', (info) => {
+    log.info(`Update available: v${info.version}`)
+    const win = BrowserWindow.getAllWindows()[0]
+    win?.webContents.send('update:available', {
+      version: info.version,
+      releaseNotes: typeof info.releaseNotes === 'string' ? info.releaseNotes : null
+    })
+  })
+
+  autoUpdater.on('download-progress', (progress) => {
+    const win = BrowserWindow.getAllWindows()[0]
+    win?.webContents.send('update:download-progress', {
+      percent: Math.round(progress.percent),
+      transferred: progress.transferred,
+      total: progress.total
+    })
+  })
+
+  autoUpdater.on('update-downloaded', () => {
+    log.info('Update downloaded, installing...')
+    autoUpdater.quitAndInstall(false, true)
+  })
+
+  autoUpdater.on('error', (err) => {
+    log.warn('Auto-updater error:', err.message)
+  })
+
+  autoUpdater.on('update-not-available', () => {
+    log.info('App is up to date.')
+  })
+
+  // Check on every launch (silently, errors are caught)
+  autoUpdater.checkForUpdates().catch((err) => {
+    log.warn('Update check failed (no internet?):', err.message)
+  })
+
+  // IPC: user accepted the update → start download
+  ipcMain.handle('update:start-download', () => {
+    autoUpdater.downloadUpdate().catch((err) => {
+      log.warn('Download failed:', err.message)
+    })
+  })
+
+  // IPC: user skipped the update → do nothing, app continues
+  ipcMain.handle('update:skip', () => {
+    log.info('User skipped update')
+  })
+}
+
 app.whenReady().then(() => {
   setupLogger()
   electronApp.setAppUserModelId('com.freshdesk.repair')
@@ -70,13 +124,12 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 
-  // Auto-updater (production only)
+  // Auto-updater (production only) — checks on every launch, asks user before installing
   if (!is.dev) {
-    autoUpdater.logger = log
-    autoUpdater.checkForUpdatesAndNotify()
+    setupAutoUpdater()
   }
 
-  log.info('FreshDesk v2.0 started')
+  log.info('FreshDesk v2.1.0 started')
 })
 
 app.on('window-all-closed', () => {
