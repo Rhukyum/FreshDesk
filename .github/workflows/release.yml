@@ -11,6 +11,10 @@ on:
         required: true
         default: '1.0.0'
 
+# Permissions globales minimales — chaque job déclare ce dont il a besoin
+permissions:
+  contents: read
+
 jobs:
   release:
     runs-on: windows-latest
