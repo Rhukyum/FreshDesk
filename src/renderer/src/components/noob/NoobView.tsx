@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Sparkles, Loader2 } from 'lucide-react'
 import { useAppStore, CommandMeta } from '../../store/app.store'
 import CategoryCard from './CategoryCard'
 import NoobCommandList from './NoobCommandList'
 import NoobProgressView from './NoobProgressView'
-import ConfirmDialog from './ConfirmDialog'
+import FixAllDialog from './FixAllDialog'
 
 interface Props {
   onRun: (id: string) => void
@@ -18,7 +18,7 @@ export default function NoobView({ onRun, onRunAll }: Props) {
   const { commands, isRunning, currentCommandId, progress } = useAppStore()
   const [screen, setScreen] = useState<NoobScreen>('home')
   const [activeCategory, setActiveCategory] = useState<CommandMeta['category'] | null>(null)
-  const [fixAllConfirm, setFixAllConfirm] = useState(false)
+  const [fixAllOpen, setFixAllOpen] = useState(false)
 
   const categories: CommandMeta['category'][] = ['network', 'maintenance', 'performance', 'security', 'diagnostics', 'system']
 
@@ -30,13 +30,17 @@ export default function NoobView({ onRun, onRunAll }: Props) {
       (c.risk === 'low' || c.risk === 'medium')
     )
 
-  const fixAllIds = ['flush-dns', 'clean-temp', 'clean-prefetch', 'reset-print-queue', 'check-defender', 'check-uac']
-    .filter((id) => commands.find((c) => c.id === id))
+  const noobSafeCommands = commands.filter(
+    (c) =>
+      (c.mode === 'noob' || c.mode === 'both') &&
+      (c.risk === 'low' || c.risk === 'medium') &&
+      (c.noobLabel || c.label)
+  )
 
-  const handleFixAll = () => {
-    setFixAllConfirm(false)
+  const handleFixAll = (ids: string[]) => {
+    setFixAllOpen(false)
     setScreen('running')
-    onRunAll(fixAllIds)
+    onRunAll(ids)
   }
 
   const handleCategorySelect = (cat: CommandMeta['category']) => {
@@ -93,7 +97,7 @@ export default function NoobView({ onRun, onRunAll }: Props) {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => setFixAllConfirm(true)}
+                onClick={() => setFixAllOpen(true)}
                 disabled={isRunning}
                 className="flex items-center gap-2.5 bg-white text-noob-primary font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-60"
               >
@@ -105,7 +109,7 @@ export default function NoobView({ onRun, onRunAll }: Props) {
                 Réparer et optimiser mon PC
               </motion.button>
               <p className="text-blue-200 text-xs mt-3 opacity-80">
-                Lance {fixAllIds.length} corrections sûres automatiquement
+                Choisissez parmi {noobSafeCommands.length} corrections disponibles
               </p>
             </div>
           </motion.div>
@@ -135,13 +139,12 @@ export default function NoobView({ onRun, onRunAll }: Props) {
         </div>
       </motion.div>
 
-      {/* Fix All Confirmation */}
-      <ConfirmDialog
-        open={fixAllConfirm}
-        title="Réparer et optimiser mon PC"
-        description={`FreshDesk va lancer ${fixAllIds.length} corrections sûres : vider le cache DNS, nettoyer les fichiers temporaires, vérifier l'antivirus et plus. C'est rapide et sans risque.`}
+      {/* Fix All Selection Dialog */}
+      <FixAllDialog
+        open={fixAllOpen}
+        commands={commands}
         onConfirm={handleFixAll}
-        onCancel={() => setFixAllConfirm(false)}
+        onCancel={() => setFixAllOpen(false)}
       />
     </>
   )

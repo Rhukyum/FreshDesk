@@ -1,10 +1,11 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useAppStore } from './store/app.store'
 import TopBar from './components/layout/TopBar'
 import StatusBar from './components/layout/StatusBar'
 import NoobView from './components/noob/NoobView'
 import ExpertView from './components/expert/ExpertView'
+import UpdateDialog from './components/UpdateDialog'
 
 declare global {
   interface Window {
@@ -24,6 +25,10 @@ declare global {
       onOutputData: (cb: (data: { line: string; type: 'stdout' | 'stderr' }) => void) => () => void
       onOutputDone: (cb: (data: { success: boolean; duration: number; exitCode: number }) => void) => () => void
       onOutputProgress: (cb: (data: { percent: number; message: string; step: number; total: number; currentId?: string }) => void) => () => void
+      onUpdateAvailable: (cb: (info: { version: string; releaseNotes: string | null }) => void) => () => void
+      onUpdateDownloadProgress: (cb: (data: { percent: number }) => void) => () => void
+      startUpdateDownload: () => Promise<void>
+      skipUpdate: () => Promise<void>
       minimizeWindow: () => void
       maximizeWindow: () => void
       closeWindow: () => void
@@ -33,6 +38,10 @@ declare global {
 
 export default function App() {
   const { mode, setMode, setCommands, setAdminInfo, appendOutput, setIsRunning, setCurrentCommandId, setProgress, setLastSuccess, clearOutput } = useAppStore()
+
+  const [updateInfo, setUpdateInfo] = useState<{ version: string; releaseNotes: string | null } | null>(null)
+  const [updateDownloadPercent, setUpdateDownloadPercent] = useState<number | null>(null)
+  const [updateDialogOpen, setUpdateDialogOpen] = useState(false)
 
   useEffect(() => {
     // Load saved mode preference
@@ -55,6 +64,7 @@ export default function App() {
       setIsRunning(false)
       setCurrentCommandId(null)
       setLastSuccess(success)
+      setProgress(null)
       appendOutput(
         success
           ? `\n✓ Completed in ${duration < 1000 ? duration + 'ms' : (duration / 1000).toFixed(1) + 's'}`
@@ -68,10 +78,22 @@ export default function App() {
       if (data.currentId) setCurrentCommandId(data.currentId)
     })
 
+    // Listen for update events
+    const unsubUpdate = window.api.onUpdateAvailable((info) => {
+      setUpdateInfo(info)
+      setUpdateDialogOpen(true)
+    })
+
+    const unsubDownload = window.api.onUpdateDownloadProgress(({ percent }) => {
+      setUpdateDownloadPercent(percent)
+    })
+
     return () => {
       unsubData()
       unsubDone()
       unsubProgress()
+      unsubUpdate()
+      unsubDownload()
     }
   }, [])
 
@@ -89,9 +111,20 @@ export default function App() {
     setIsRunning(true)
     setCurrentCommandId(null)
     setLastSuccess(null)
-    setProgress({ percent: 0, message: 'Starting...', step: 0, total: ids.length })
+    setProgress({ percent: 0, message: 'Démarrage...', step: 0, total: ids.length })
     await window.api.runAll(ids)
     setProgress(null)
+  }
+
+  const handleUpdateStart = async () => {
+    await window.api.startUpdateDownload()
+  }
+
+  const handleUpdateSkip = async () => {
+    await window.api.skipUpdate()
+    setUpdateDialogOpen(false)
+    setUpdateInfo(null)
+    setUpdateDownloadPercent(null)
   }
 
   return (
@@ -125,6 +158,15 @@ export default function App() {
         </AnimatePresence>
       </main>
       <StatusBar />
+
+      {/* Auto-update dialog */}
+      <UpdateDialog
+        open={updateDialogOpen}
+        version={updateInfo?.version ?? ''}
+        downloadPercent={updateDownloadPercent}
+        onUpdate={handleUpdateStart}
+        onSkip={handleUpdateSkip}
+      />
     </div>
   )
 }

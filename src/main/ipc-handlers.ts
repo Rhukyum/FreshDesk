@@ -39,12 +39,30 @@ export function registerIpcHandlers(): void {
       }
     }
 
+    // Send initial progress so NoobProgressView shows activity
+    getMainWindow()?.webContents.send('output:progress', {
+      percent: 0,
+      message: command.noobLabel || command.label,
+      currentId: id,
+      step: 1,
+      total: 1
+    })
+
     currentAbortController = new AbortController()
     const startTime = Date.now()
 
     try {
       const result = await command.execute(sendOutput, currentAbortController.signal)
       const duration = Date.now() - startTime
+
+      // Send final progress
+      getMainWindow()?.webContents.send('output:progress', {
+        percent: 100,
+        message: result.success ? 'Terminé !' : 'Erreur lors de l\'exécution',
+        currentId: id,
+        step: 1,
+        total: 1
+      })
 
       addLog({
         timestamp: new Date().toISOString(),

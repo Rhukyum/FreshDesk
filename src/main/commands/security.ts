@@ -28,8 +28,11 @@ export const securityCommands: CommandDef[] = [
     adminRequired: false,
     hasRollback: false,
     execute: (onData, signal) =>
-      runCommand(
-        'reg query "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System" /v EnableLUA',
+      runPowerShell(
+        "$val = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name EnableLUA -ErrorAction SilentlyContinue).EnableLUA; " +
+        "if ($null -eq $val) { Write-Output 'INFO: Cle EnableLUA absente — UAC actif par defaut (comportement Windows standard).'; Write-Output 'Statut: PROTEGE' } " +
+        "elseif ($val -eq 1) { Write-Output 'UAC ACTIF (EnableLUA = 1)'; Write-Output 'Statut: PROTEGE — Le Controle de Compte Utilisateur est bien active.' } " +
+        "else { Write-Output 'UAC DESACTIVE (EnableLUA = 0)'; Write-Output 'Statut: RISQUE — Le Controle de Compte Utilisateur est desactive.' }",
         { onData, signal }
       )
   },

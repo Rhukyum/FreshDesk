@@ -34,6 +34,18 @@ const api = {
     return () => ipcRenderer.removeAllListeners('output:progress')
   },
 
+  // Auto-updater events
+  onUpdateAvailable: (cb: (info: { version: string; releaseNotes: string | null }) => void) => {
+    ipcRenderer.on('update:available', (_e, info) => cb(info))
+    return () => ipcRenderer.removeAllListeners('update:available')
+  },
+  onUpdateDownloadProgress: (cb: (data: { percent: number }) => void) => {
+    ipcRenderer.on('update:download-progress', (_e, data) => cb(data))
+    return () => ipcRenderer.removeAllListeners('update:download-progress')
+  },
+  startUpdateDownload: () => ipcRenderer.invoke('update:start-download'),
+  skipUpdate: () => ipcRenderer.invoke('update:skip'),
+
   // Settings (persist noob/expert mode)
   getSettings: () => ipcRenderer.invoke('settings:get'),
   saveSettings: (s: { mode: string }) => ipcRenderer.invoke('settings:set', s),
