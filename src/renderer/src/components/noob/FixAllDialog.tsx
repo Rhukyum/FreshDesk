@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, Check, Minus, ChevronDown, ChevronUp } from 'lucide-react'
 import { CommandMeta } from '../../store/app.store'
@@ -97,7 +98,7 @@ export default function FixAllDialog({ open, commands, onConfirm, onCancel }: Pr
     })
   }
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {open && (
         <>
@@ -257,6 +258,7 @@ export default function FixAllDialog({ open, commands, onConfirm, onCancel }: Pr
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }

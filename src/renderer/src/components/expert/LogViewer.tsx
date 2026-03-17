@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import { useAppStore } from '../../store/app.store'
 import { cn } from '../../lib/utils'
 import { RefreshCw, Download } from 'lucide-react'
@@ -6,14 +6,14 @@ import { RefreshCw, Download } from 'lucide-react'
 export default function LogViewer() {
   const { logs, setLogs } = useAppStore()
 
-  const loadLogs = async () => {
+  const loadLogs = useCallback(async () => {
     const data = await window.api.getLogs(100)
     setLogs(data)
-  }
+  }, [setLogs])
 
   useEffect(() => {
     loadLogs()
-  }, [])
+  }, [loadLogs])
 
   return (
     <div className="flex flex-col h-full">

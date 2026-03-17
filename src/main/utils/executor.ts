@@ -19,7 +19,8 @@ export function runCommand(cmd: string, opts: ExecutorOptions): Promise<Executor
     const startTime = Date.now()
     log.info(`Executing: ${cmd}`)
 
-    const child = spawn('cmd.exe', ['/c', cmd], {
+    // Prepend chcp 65001 to force UTF-8 output from Windows commands
+    const child = spawn('cmd.exe', ['/c', `chcp 65001 >nul 2>&1 & ${cmd}`], {
       shell: false,
       windowsHide: true,
       env: { ...process.env, TERM: 'dumb' }
@@ -82,6 +83,8 @@ export function runCommand(cmd: string, opts: ExecutorOptions): Promise<Executor
 }
 
 export function runPowerShell(script: string, opts: ExecutorOptions): Promise<ExecutorResult> {
-  const encoded = Buffer.from(script, 'utf16le').toString('base64')
+  // Set output encoding to UTF-8 so accented characters display correctly
+  const fullScript = `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8\n${script}`
+  const encoded = Buffer.from(fullScript, 'utf16le').toString('base64')
   return runCommand(`powershell.exe -NoProfile -NonInteractive -EncodedCommand ${encoded}`, opts)
 }

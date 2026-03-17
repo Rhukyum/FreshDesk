@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, CheckSquare, Square, Play } from 'lucide-react'
 import { useAppStore, CommandMeta } from '../../store/app.store'
@@ -51,7 +52,7 @@ export default function RunAllModal({ open, onClose, onRun }: Props) {
     onRun(ids)
   }
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -176,6 +177,7 @@ export default function RunAllModal({ open, onClose, onRun }: Props) {
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }
