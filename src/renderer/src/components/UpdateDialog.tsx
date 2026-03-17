@@ -24,12 +24,13 @@ export default function UpdateDialog({ open, version, downloadPercent, onUpdate,
             className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50"
           />
           {/* Dialog */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 8 }}
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[400px]"
+            className="w-[400px]"
           >
             <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
               {/* Header */}
@@ -94,6 +95,7 @@ export default function UpdateDialog({ open, version, downloadPercent, onUpdate,
               </div>
             </div>
           </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>
