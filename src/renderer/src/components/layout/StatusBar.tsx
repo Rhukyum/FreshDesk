@@ -2,7 +2,11 @@ import { useAppStore } from '../../store/app.store'
 import { cn } from '../../lib/utils'
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react'
 
-export default function StatusBar() {
+interface Props {
+  version?: string
+}
+
+export default function StatusBar({ version }: Props) {
   const { mode, isRunning, progress, lastSuccess, currentCommandId } = useAppStore()
   const isNoob = mode === 'noob'
 
@@ -61,9 +65,9 @@ export default function StatusBar() {
         </div>
       )}
 
-      {/* Version */}
-      {!isRunning && (
-        <span className="opacity-40">v2.0.0</span>
+      {/* Version — dynamically read from package.json via Electron's app.getVersion() */}
+      {!isRunning && version && (
+        <span className="opacity-40">v{version}</span>
       )}
     </div>
   )

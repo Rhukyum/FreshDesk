@@ -46,6 +46,11 @@ export function runCommand(cmd: string, opts: ExecutorOptions): Promise<Executor
       setTimeout(() => child.kill('SIGKILL'), 1000)
     }, timeoutMs)
 
+    // Force UTF-8 on Node.js streams so that accented characters (é, è, à…)
+    // are decoded correctly even though chcp 65001 already set the console codepage.
+    child.stdout.setEncoding('utf8')
+    child.stderr.setEncoding('utf8')
+
     // Stream stdout
     const stdoutRL = createInterface({ input: child.stdout })
     stdoutRL.on('line', (line) => {
