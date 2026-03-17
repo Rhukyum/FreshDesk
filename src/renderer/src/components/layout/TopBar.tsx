@@ -1,12 +1,13 @@
 import { useState } from 'react'
-import { Shield, Minus, Square, X, AlertTriangle } from 'lucide-react'
+import { createPortal } from 'react-dom'
+import { Minus, Square, X, AlertTriangle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '../../store/app.store'
 import { cn } from '../../lib/utils'
 import FreshDeskLogo from '../shared/FreshDeskLogo'
 
 export default function TopBar() {
-  const { mode, setMode, adminInfo } = useAppStore()
+  const { mode, setMode } = useAppStore()
   const isNoob = mode === 'noob'
   const [showExpertWarning, setShowExpertWarning] = useState(false)
 
@@ -81,23 +82,8 @@ export default function TopBar() {
           </div>
         </div>
 
-        {/* Right: admin badge + window controls — fixed, no shrink */}
+        {/* Right: window controls — fixed, no shrink */}
         <div className="flex items-center gap-2 no-drag flex-shrink-0">
-          {/* Admin badge */}
-          {adminInfo && (
-            <div
-              className={cn(
-                'flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap',
-                adminInfo.isAdmin
-                  ? 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/25'
-                  : 'bg-amber-500/15 text-amber-500 border border-amber-500/25'
-              )}
-            >
-              <Shield className="w-3 h-3 flex-shrink-0" />
-              {adminInfo.isAdmin ? 'Admin' : 'Standard'}
-            </div>
-          )}
-
           {/* Window controls */}
           <div className="flex items-center gap-0.5 ml-1">
             <WindowBtn
@@ -129,23 +115,24 @@ export default function TopBar() {
       </div>
 
       {/* Expert mode warning dialog */}
-      <AnimatePresence>
-        {showExpertWarning && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/50"
-              onClick={() => setShowExpertWarning(false)}
-            />
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0, y: 8 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              className="relative z-10 w-[420px] bg-white rounded-2xl shadow-2xl border border-gray-100 p-6"
-            >
+      {createPortal(
+        <AnimatePresence>
+          {showExpertWarning && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 bg-black/50"
+                onClick={() => setShowExpertWarning(false)}
+              />
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0, y: 8 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="relative z-10 w-[420px] bg-white rounded-2xl shadow-2xl border border-gray-100 p-6"
+              >
               {/* Warning icon */}
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
@@ -192,10 +179,12 @@ export default function TopBar() {
                   Je comprends, continuer
                 </button>
               </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </>
   )
 }

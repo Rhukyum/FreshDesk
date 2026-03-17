@@ -6,6 +6,7 @@ import StatusBar from './components/layout/StatusBar'
 import NoobView from './components/noob/NoobView'
 import ExpertView from './components/expert/ExpertView'
 import UpdateDialog from './components/UpdateDialog'
+import TestReportModal from './components/shared/TestReportModal'
 
 declare global {
   interface Window {
@@ -37,7 +38,7 @@ declare global {
 }
 
 export default function App() {
-  const { mode, setMode, setCommands, setAdminInfo, appendOutput, setIsRunning, setCurrentCommandId, setProgress, setLastSuccess, clearOutput } = useAppStore()
+  const { mode, setMode, setCommands, setAdminInfo, appendOutput, setIsRunning, setCurrentCommandId, setProgress, setLastSuccess, clearOutput, commands, setLastTestReport, lastTestReport } = useAppStore()
 
   const [updateInfo, setUpdateInfo] = useState<{ version: string; releaseNotes: string | null } | null>(null)
   const [updateDownloadPercent, setUpdateDownloadPercent] = useState<number | null>(null)
@@ -103,7 +104,23 @@ export default function App() {
     setCurrentCommandId(id)
     setLastSuccess(null)
     appendOutput(`> Running: ${id}`, 'system')
-    await window.api.runCommand(id)
+    const result = await window.api.runCommand(id)
+    const cmd = commands.find((c) => c.id === id)
+    if (cmd) {
+      setLastTestReport({
+        items: [{
+          id,
+          label: cmd.label,
+          noobLabel: cmd.noobLabel,
+          success: result?.success ?? false,
+          duration: result?.duration
+        }],
+        totalSuccess: result?.success ? 1 : 0,
+        totalFailed: result?.success ? 0 : 1,
+        completedAt: Date.now(),
+        isBatch: false
+      })
+    }
   }
 
   const runAll = async (ids: string[]) => {
@@ -112,8 +129,24 @@ export default function App() {
     setCurrentCommandId(null)
     setLastSuccess(null)
     setProgress({ percent: 0, message: 'Démarrage...', step: 0, total: ids.length })
-    await window.api.runAll(ids)
+    const results = await window.api.runAll(ids)
     setProgress(null)
+    const items = results.map((r) => {
+      const cmd = commands.find((c) => c.id === r.id)
+      return {
+        id: r.id,
+        label: cmd?.label ?? r.id,
+        noobLabel: cmd?.noobLabel ?? '',
+        success: r.success
+      }
+    })
+    setLastTestReport({
+      items,
+      totalSuccess: items.filter((i) => i.success).length,
+      totalFailed: items.filter((i) => !i.success).length,
+      completedAt: Date.now(),
+      isBatch: true
+    })
   }
 
   const handleUpdateStart = async () => {
@@ -166,6 +199,12 @@ export default function App() {
         downloadPercent={updateDownloadPercent}
         onUpdate={handleUpdateStart}
         onSkip={handleUpdateSkip}
+      />
+
+      {/* Test report */}
+      <TestReportModal
+        report={lastTestReport}
+        onClose={() => setLastTestReport(null)}
       />
     </div>
   )

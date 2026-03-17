@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { AlertCircle } from 'lucide-react'
 
@@ -10,7 +11,7 @@ interface Props {
 }
 
 export default function ConfirmDialog({ open, title, description, onConfirm, onCancel }: Props) {
-  return (
+  return createPortal(
     <AnimatePresence>
       {open && (
         <>
@@ -58,6 +59,7 @@ export default function ConfirmDialog({ open, title, description, onConfirm, onC
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }

@@ -55,6 +55,22 @@ export interface ProgressInfo {
   currentId?: string
 }
 
+export interface TestReportItem {
+  id: string
+  label: string
+  noobLabel: string
+  success: boolean
+  duration?: number
+}
+
+export interface TestReport {
+  items: TestReportItem[]
+  totalSuccess: number
+  totalFailed: number
+  completedAt: number
+  isBatch: boolean
+}
+
 interface AppStore {
   // Mode
   mode: AppMode
@@ -92,6 +108,10 @@ interface AppStore {
   // Last result
   lastSuccess: boolean | null
   setLastSuccess: (v: boolean | null) => void
+
+  // Test report
+  lastTestReport: TestReport | null
+  setLastTestReport: (report: TestReport | null) => void
 }
 
 export const useAppStore = create<AppStore>((set) => ({
@@ -127,5 +147,8 @@ export const useAppStore = create<AppStore>((set) => ({
   setLogs: (logs) => set({ logs }),
 
   lastSuccess: null,
-  setLastSuccess: (lastSuccess) => set({ lastSuccess })
+  setLastSuccess: (lastSuccess) => set({ lastSuccess }),
+
+  lastTestReport: null,
+  setLastTestReport: (lastTestReport) => set({ lastTestReport })
 }))
