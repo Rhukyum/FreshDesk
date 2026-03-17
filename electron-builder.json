@@ -17,7 +17,6 @@
       }
     ],
     "requestedExecutionLevel": "requireAdministrator",
-    "publisherName": "Rhukyum",
     "verifyUpdateCodeSignature": false
   },
   "nsis": {
