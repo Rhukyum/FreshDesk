@@ -3,6 +3,10 @@ interface Props {
   className?: string
 }
 
+/**
+ * FreshDesk in-app logo — coordinates scaled from resources/icon.svg (256×256 → 200×200,
+ * factor 0.78125) so that the in-app logo is pixel-perfect identical to the desktop icon.
+ */
 export default function FreshDeskLogo({ size = 28, className = '' }: Props) {
   return (
     <svg
@@ -19,20 +23,26 @@ export default function FreshDeskLogo({ size = 28, className = '' }: Props) {
           <stop offset="100%" stopColor="#1D4ED8" />
         </linearGradient>
       </defs>
+      {/* Rounded square background — rx/ry scaled from 56 → 43.75 ≈ 44 */}
       <rect width="200" height="200" rx="44" fill="url(#fdBg)" />
-      <rect x="12" y="12" width="176" height="90" rx="32" fill="white" opacity="0.06" />
-      {/* F - vertical bar */}
-      <rect x="52" y="42" width="18" height="116" rx="7" fill="white" />
-      {/* F - top bar */}
-      <rect x="52" y="42" width="88" height="18" rx="7" fill="white" />
-      {/* F - middle bar */}
-      <rect x="52" y="93" width="64" height="18" rx="7" fill="white" />
-      {/* Circuit dots */}
-      <circle cx="148" cy="142" r="8" fill="white" opacity="0.85" />
-      <rect x="144" y="112" width="8" height="32" rx="4" fill="white" opacity="0.5" />
-      <circle cx="148" cy="110" r="5" fill="white" opacity="0.65" />
-      <circle cx="164" cy="142" r="5" fill="white" opacity="0.45" />
-      <rect x="148" y="138" width="18" height="8" rx="4" fill="white" opacity="0.4" />
+      {/* Subtle top highlight — scaled from x16,y16,w224,h112,rx40 */}
+      <rect x="12.5" y="12.5" width="175" height="87.5" rx="31" fill="white" opacity="0.06" />
+      {/* Letter F — vertical bar: x66,y54,w23,h148,rx9 */}
+      <rect x="51.5" y="42" width="18" height="115.5" rx="7" fill="white" />
+      {/* Letter F — top horizontal bar: x66,y54,w112,h23,rx9 */}
+      <rect x="51.5" y="42" width="87.5" height="18" rx="7" fill="white" />
+      {/* Letter F — middle horizontal bar: x66,y119,w82,h23,rx9 */}
+      <rect x="51.5" y="92.5" width="64" height="18" rx="7" fill="white" />
+      {/* Circuit decoration — main circle: cx190,cy182,r10 */}
+      <circle cx="148.5" cy="142" r="7.8" fill="white" opacity="0.85" />
+      {/* Circuit decoration — vertical wire: x185,y144,w10,h40 */}
+      <rect x="144" y="112.5" width="7.8" height="31.2" rx="3.9" fill="white" opacity="0.5" />
+      {/* Circuit decoration — small top circle: cx190,cy140,r6 */}
+      <circle cx="148.5" cy="109.5" r="4.7" fill="white" opacity="0.65" />
+      {/* Circuit decoration — far circle: cx210,cy182,r6 */}
+      <circle cx="164" cy="142" r="4.7" fill="white" opacity="0.45" />
+      {/* Circuit decoration — horizontal wire: x190,y176,w22,h10 */}
+      <rect x="148.5" y="137.5" width="17.2" height="7.8" rx="3.9" fill="white" opacity="0.4" />
     </svg>
   )
 }

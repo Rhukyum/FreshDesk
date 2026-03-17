@@ -33,6 +33,7 @@ declare global {
       minimizeWindow: () => void
       maximizeWindow: () => void
       closeWindow: () => void
+      getVersion: () => Promise<string>
     }
   }
 }
@@ -40,11 +41,15 @@ declare global {
 export default function App() {
   const { mode, setMode, setCommands, setAdminInfo, appendOutput, setIsRunning, setCurrentCommandId, setProgress, setLastSuccess, clearOutput, commands, setLastTestReport, lastTestReport } = useAppStore()
 
+  const [appVersion, setAppVersion] = useState<string>('')
   const [updateInfo, setUpdateInfo] = useState<{ version: string; releaseNotes: string | null } | null>(null)
   const [updateDownloadPercent, setUpdateDownloadPercent] = useState<number | null>(null)
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false)
 
   useEffect(() => {
+    // Load app version from main process
+    window.api.getVersion().then(setAppVersion)
+
     // Load saved mode preference
     window.api.getSettings().then(({ mode }) => {
       if (mode === 'expert' || mode === 'noob') setMode(mode)
@@ -190,7 +195,7 @@ export default function App() {
           )}
         </AnimatePresence>
       </main>
-      <StatusBar />
+      <StatusBar version={appVersion} />
 
       {/* Auto-update dialog */}
       <UpdateDialog

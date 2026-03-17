@@ -50,6 +50,9 @@ const api = {
   getSettings: () => ipcRenderer.invoke('settings:get'),
   saveSettings: (s: { mode: string }) => ipcRenderer.invoke('settings:set', s),
 
+  // App info
+  getVersion: (): Promise<string> => ipcRenderer.invoke('app:get-version'),
+
   // Window controls
   minimizeWindow: () => ipcRenderer.send('window:minimize'),
   maximizeWindow: () => ipcRenderer.send('window:maximize'),

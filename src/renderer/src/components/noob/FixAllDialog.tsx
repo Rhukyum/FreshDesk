@@ -111,13 +111,15 @@ export default function FixAllDialog({ open, commands, onConfirm, onCancel }: Pr
             onClick={onCancel}
           />
 
-          {/* Dialog */}
+          {/* Dialog wrapper — centering must be on a non-animated element
+               because Framer Motion overrides CSS transform via inline styles */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 8 }}
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[480px] max-h-[85vh] flex flex-col"
+            className="relative w-[480px] max-h-[85vh] flex flex-col pointer-events-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="bg-white rounded-2xl shadow-2xl border border-noob-border flex flex-col overflow-hidden">
@@ -256,6 +258,7 @@ export default function FixAllDialog({ open, commands, onConfirm, onCancel }: Pr
               </div>
             </div>
           </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>,

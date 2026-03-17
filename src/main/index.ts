@@ -112,6 +112,9 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
+  // Expose app version to renderer
+  ipcMain.handle('app:get-version', () => app.getVersion())
+
   // Window control IPC
   ipcMain.on('window:minimize', (e) => BrowserWindow.fromWebContents(e.sender)?.minimize())
   ipcMain.on('window:maximize', (e) => {
@@ -142,7 +145,7 @@ app.whenReady().then(() => {
     setupAutoUpdater()
   }
 
-  log.info('FreshDesk v2.0.0 started')
+  log.info(`FreshDesk v${app.getVersion()} started`)
 })
 
 app.on('window-all-closed', () => {
