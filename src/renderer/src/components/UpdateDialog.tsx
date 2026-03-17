@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Download, X, RefreshCw } from 'lucide-react'
 
@@ -12,7 +13,7 @@ interface Props {
 export default function UpdateDialog({ open, version, downloadPercent, onUpdate, onSkip }: Props) {
   const isDownloading = downloadPercent !== null && downloadPercent < 100
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {open && (
         <>
@@ -98,6 +99,7 @@ export default function UpdateDialog({ open, version, downloadPercent, onUpdate,
           </div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }

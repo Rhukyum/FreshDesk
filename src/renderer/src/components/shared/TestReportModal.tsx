@@ -8,15 +8,6 @@ interface Props {
   onClose: () => void
 }
 
-const CATEGORY_LABELS: Record<string, string> = {
-  network: 'Réseau',
-  maintenance: 'Maintenance',
-  performance: 'Performance',
-  security: 'Sécurité',
-  diagnostics: 'Diagnostics',
-  system: 'Système'
-}
-
 function formatTime(ts: number): string {
   return new Date(ts).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
 }

@@ -100,14 +100,16 @@ export default function Sidebar({ onSnapshot }: Props) {
       <div className="flex-1" />
 
       {/* Snapshot button */}
-      <div className="p-3 border-t border-expert-border">
-        <button
-          onClick={onSnapshot}
-          className="w-full expert-btn text-center"
-        >
-          📸 Snapshot registre
-        </button>
-      </div>
+      {onSnapshot && (
+        <div className="p-3 border-t border-expert-border">
+          <button
+            onClick={onSnapshot}
+            className="w-full expert-btn text-center"
+          >
+            📸 Snapshot registre
+          </button>
+        </div>
+      )}
     </div>
   )
 }
