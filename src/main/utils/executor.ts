@@ -82,7 +82,6 @@ export function runCommand(cmd: string, opts: ExecutorOptions): Promise<Executor
 }
 
 export function runPowerShell(script: string, opts: ExecutorOptions): Promise<ExecutorResult> {
-  const escaped = script.replace(/"/g, '\\"')
-  const cmd = `powershell.exe -NoProfile -NonInteractive -Command "${escaped}"`
-  return runCommand(cmd, opts)
+  const encoded = Buffer.from(script, 'utf16le').toString('base64')
+  return runCommand(`powershell.exe -NoProfile -NonInteractive -EncodedCommand ${encoded}`, opts)
 }
