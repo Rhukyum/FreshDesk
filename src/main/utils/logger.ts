@@ -31,3 +31,7 @@ export function addLog(entry: LogEntry): void {
 export function getLogs(last = 100): LogEntry[] {
   return inMemoryLogs.slice(-last).reverse()
 }
+
+export function clearLogs(): void {
+  inMemoryLogs.splice(0, inMemoryLogs.length)
+}

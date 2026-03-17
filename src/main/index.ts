@@ -30,7 +30,15 @@ function createWindow(): void {
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
+    const allowedProtocols = ['https:', 'http:']
+    try {
+      const url = new URL(details.url)
+      if (allowedProtocols.includes(url.protocol)) {
+        shell.openExternal(details.url)
+      }
+    } catch {
+      // invalid URL, ignore
+    }
     return { action: 'deny' }
   })
 
@@ -117,7 +125,11 @@ app.whenReady().then(() => {
 
   // Settings IPC
   ipcMain.handle('settings:get', () => loadSettings())
-  ipcMain.handle('settings:set', (_e, s: { mode: string }) => saveSettings(s))
+  ipcMain.handle('settings:set', (_e, s: { mode: string }) => {
+    if (s?.mode === 'noob' || s?.mode === 'expert') {
+      saveSettings({ mode: s.mode })
+    }
+  })
 
   createWindow()
 
@@ -130,7 +142,7 @@ app.whenReady().then(() => {
     setupAutoUpdater()
   }
 
-  log.info('FreshDesk v2.1.0 started')
+  log.info('FreshDesk v2.0.0 started')
 })
 
 app.on('window-all-closed', () => {

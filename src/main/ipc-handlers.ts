@@ -2,7 +2,7 @@ import { ipcMain, BrowserWindow, dialog, app } from 'electron'
 import { writeFileSync } from 'fs'
 import { join } from 'path'
 import { allCommands, getCommandById, getCommandsMeta, getNoobCommands, getFixEverythingOrder } from './commands'
-import { addLog, getLogs } from './utils/logger'
+import { addLog, getLogs, clearLogs } from './utils/logger'
 import { isAdmin, getSystemInfo } from './utils/admin'
 import { exec } from 'child_process'
 import { promisify } from 'util'
@@ -95,6 +95,7 @@ export function registerIpcHandlers(): void {
   })
 
   ipcMain.handle('commands:run-all', async (_event, ids: string[]) => {
+    if (!Array.isArray(ids)) return []
     currentAbortController = new AbortController()
     const results: Array<{ id: string; success: boolean }> = []
 
@@ -102,8 +103,25 @@ export function registerIpcHandlers(): void {
       if (currentAbortController.signal.aborted) break
 
       const id = ids[i]
+      if (typeof id !== 'string') continue
       const command = getCommandById(id)
       if (!command) continue
+
+      // Check admin if required
+      if (command.adminRequired) {
+        const admin = await isAdmin()
+        if (!admin) {
+          results.push({ id, success: false })
+          sendOutput(`✗ ${command.label}: Admin privileges required`, 'stderr')
+          addLog({
+            timestamp: new Date().toISOString(),
+            level: 'ERROR',
+            commandId: id,
+            message: 'Admin required — skipped'
+          })
+          continue
+        }
+      }
 
       const percent = Math.round(((i) / ids.length) * 100)
       getMainWindow()?.webContents.send('output:progress', {
@@ -225,7 +243,7 @@ export function registerIpcHandlers(): void {
 
   // --- Logs ---
   ipcMain.handle('logs:get', (_event, last = 100) => getLogs(last))
-  ipcMain.handle('logs:clear', () => { /* clear implemented in logger */ })
+  ipcMain.handle('logs:clear', () => clearLogs())
 
   ipcMain.handle('logs:export-csv', async () => {
     const { filePath } = await dialog.showSaveDialog({
