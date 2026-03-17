@@ -66,8 +66,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag "$RELEASE_TAG"
-          git push origin "$RELEASE_TAG"
+          if git ls-remote --tags origin "$RELEASE_TAG" | grep -q "refs/tags/$RELEASE_TAG$"; then
+            echo "Tag $RELEASE_TAG already exists remotely, skipping tag creation."
+          else
+            git tag "$RELEASE_TAG"
+            git push origin "$RELEASE_TAG"
+          fi
 
       - name: Generate release notes
         shell: bash
