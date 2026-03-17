@@ -19,11 +19,12 @@ export function runCommand(cmd: string, opts: ExecutorOptions): Promise<Executor
     const startTime = Date.now()
     log.info(`Executing: ${cmd}`)
 
-    // Prepend chcp 65001 to force UTF-8 output from Windows commands
-    const child = spawn('cmd.exe', ['/c', `chcp 65001 >nul 2>&1 & ${cmd}`], {
+    // Prepend chcp 65001 to force UTF-8 output from Windows commands.
+    // Use && so the command only runs after chcp succeeds.
+    const child = spawn('cmd.exe', ['/c', `chcp 65001 >nul 2>&1 && ${cmd}`], {
       shell: false,
       windowsHide: true,
-      env: { ...process.env, TERM: 'dumb' }
+      env: { ...process.env, TERM: 'dumb', PYTHONIOENCODING: 'utf-8' }
     })
 
     let aborted = false

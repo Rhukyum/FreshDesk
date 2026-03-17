@@ -55,7 +55,7 @@ export default function RunAllModal({ open, onClose, onRun }: Props) {
   return createPortal(
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center text-expert-text">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
