@@ -1,5 +1,4 @@
-import { useEffect, useRef } from 'react'
-import { Cpu, HardDrive, MemoryStick, Clock, Wifi, Trash2, Zap, Shield, Search, Settings, LayoutGrid } from 'lucide-react'
+import { Wifi, Trash2, Zap, Shield, Search, Settings, LayoutGrid } from 'lucide-react'
 import { useAppStore, Category } from '../../store/app.store'
 import { cn } from '../../lib/utils'
 
@@ -18,21 +17,7 @@ const categories: { id: Category; label: string; Icon: React.ComponentType<{ cla
 ]
 
 export default function Sidebar({ onSnapshot }: Props) {
-  const { activeCategory, setActiveCategory, systemStats, setSystemStats, commands } = useAppStore()
-  const timerRef = useRef<NodeJS.Timeout | null>(null)
-
-  const fetchStats = async () => {
-    const stats = await window.api.getSystemStats()
-    setSystemStats(stats)
-  }
-
-  useEffect(() => {
-    fetchStats()
-    timerRef.current = setInterval(fetchStats, 3000)
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current)
-    }
-  }, [])
+  const { activeCategory, setActiveCategory, commands } = useAppStore()
 
   const getCount = (cat: Category) => {
     if (cat === 'all') return commands.length
@@ -66,36 +51,6 @@ export default function Sidebar({ onSnapshot }: Props) {
         ))}
       </div>
 
-      {/* Divider */}
-      <div className="h-px bg-expert-border mx-3 my-1" />
-
-      {/* System stats */}
-      <div className="p-3">
-        <div className="text-xs font-semibold text-expert-muted uppercase tracking-wider px-2 py-1.5 mb-2">
-          Système
-        </div>
-        <div className="space-y-2.5 px-2">
-          <StatRow icon={<Cpu className="w-3.5 h-3.5" />} label="CPU" value={systemStats?.cpu ?? 0} suffix="%" />
-          <StatRow
-            icon={<MemoryStick className="w-3.5 h-3.5" />}
-            label={`RAM${systemStats?.ramTotal ? ` (${systemStats.ramTotal}GB)` : ''}`}
-            value={systemStats?.ram ?? 0}
-            suffix="%"
-          />
-          <StatRow
-            icon={<HardDrive className="w-3.5 h-3.5" />}
-            label={`Disque${systemStats?.diskFreeGB ? ` (${systemStats.diskFreeGB}GB libres)` : ''}`}
-            value={systemStats?.disk ?? 0}
-            suffix="%"
-          />
-          <div className="flex items-center gap-2 text-xs text-expert-muted">
-            <Clock className="w-3.5 h-3.5 flex-shrink-0" />
-            <span>Uptime:</span>
-            <span className="text-expert-text">{systemStats?.uptime ?? '—'}</span>
-          </div>
-        </div>
-      </div>
-
       {/* Spacer */}
       <div className="flex-1" />
 
@@ -114,33 +69,3 @@ export default function Sidebar({ onSnapshot }: Props) {
   )
 }
 
-function StatRow({
-  icon,
-  label,
-  value,
-  suffix
-}: {
-  icon: React.ReactNode
-  label: string
-  value: number
-  suffix: string
-}) {
-  const color =
-    value > 85 ? 'bg-red-500' : value > 65 ? 'bg-amber-400' : 'bg-expert-accent'
-
-  return (
-    <div>
-      <div className="flex items-center gap-2 text-xs text-expert-muted mb-1">
-        <span className="flex-shrink-0">{icon}</span>
-        <span className="truncate flex-1">{label}</span>
-        <span className="text-expert-text font-mono">{value}{suffix}</span>
-      </div>
-      <div className="w-full h-1.5 bg-expert-border rounded-full overflow-hidden">
-        <div
-          className={`h-full rounded-full transition-all duration-500 ${color}`}
-          style={{ width: `${Math.min(value, 100)}%` }}
-        />
-      </div>
-    </div>
-  )
-}
