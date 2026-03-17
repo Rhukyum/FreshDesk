@@ -32,6 +32,6 @@
   "publish": {
     "provider": "github",
     "owner": "Rhukyum",
-    "repo": "FreshDesk"
+    "repo": "FreshDesk-releases"
   }
 }
