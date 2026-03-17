@@ -25,9 +25,7 @@
     "allowToChangeInstallationDirectory": true,
     "shortcutName": "FreshDesk",
     "createDesktopShortcut": true,
-    "createStartMenuShortcut": true,
-    "installerHeaderIcon": "resources/icon.ico",
-    "uninstallerIcon": "resources/icon.ico"
+    "createStartMenuShortcut": true
   },
   "publish": {
     "provider": "github",
