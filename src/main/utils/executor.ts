@@ -115,7 +115,8 @@ export function runCommand(cmd: string, opts: ExecutorOptions): Promise<Executor
   const script = [
     '[Console]::OutputEncoding = [System.Text.Encoding]::UTF8',
     '[Console]::InputEncoding  = [System.Text.Encoding]::UTF8',
-    '& cmd.exe /c $env:FRESHDESK_CMD'
+    '$OutputEncoding = [System.Text.Encoding]::UTF8',
+    '& cmd.exe /c "chcp 65001 >nul 2>&1 & $env:FRESHDESK_CMD"'
   ].join('\n')
 
   const encoded = Buffer.from(script, 'utf16le').toString('base64')
@@ -129,6 +130,8 @@ export function runPowerShell(script: string, opts: ExecutorOptions): Promise<Ex
   const fullScript = [
     '[Console]::OutputEncoding = [System.Text.Encoding]::UTF8',
     '[Console]::InputEncoding  = [System.Text.Encoding]::UTF8',
+    '$OutputEncoding = [System.Text.Encoding]::UTF8',
+    '& cmd.exe /c "chcp 65001 >nul" 2>$null',
     script
   ].join('\n')
 
